@@ -23,7 +23,7 @@ export const useCommerceStore = defineStore('commerce', () => {
             const productsResponse = await commerce.products.list()
             products.data = productsResponse.data
             const cartResponse = await commerce.cart.retrieve()
-            cart.data = cartResponse.data
+            cart.data = cartResponse
         } catch (error) {
             cart.error = error
             products.error = error
