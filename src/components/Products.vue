@@ -1,17 +1,16 @@
 <template>
     <div class="flex flex-wrap gap-8">
-        <Preview
+        <Product
             class="w-64 text-left"
             v-for="product in products"
             :key="product"
             :product="product"
         >
-        </Preview>
+        </Product>
     </div>
 </template>
 <script setup>
 import { useCommerceStore } from '../stores/commerce'
-import Preview from './Preview.vue'
 
 const commerceStore = useCommerceStore()
 

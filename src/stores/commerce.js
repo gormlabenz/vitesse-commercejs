@@ -18,25 +18,20 @@ export const useCommerceStore = defineStore('commerce', () => {
         error: null,
     })
 
-    commerce.cart
-        .retrieve()
-        .then((resp) => {
-            cart.data = resp
-            cart.isLoading = false
-        })
-        .catch((error) => {
+    const init = async () => {
+        try {
+            const productsResponse = await commerce.products.list()
+            products.data = productsResponse.data
+            const cartResponse = await commerce.cart.retrieve()
+            cart.data = cartResponse.data
+        } catch (error) {
             cart.error = error
-        })
-
-    commerce.products
-        .list()
-        .then((resp) => {
-            products.data = resp.data
-            products.isLoading = false
-        })
-        .catch((error) => {
             products.error = error
-        })
+        } finally {
+            cart.isLoading = false
+            products.isLoading = false
+        }
+    }
 
     const addToCart = (product) =>
         commerce.cart
@@ -67,12 +62,18 @@ export const useCommerceStore = defineStore('commerce', () => {
                 cart.error = error
             })
 
+    function getProduct(id) {
+        return products.data.find((p) => p.id === id)
+    }
+
     return {
         products,
         cart,
+        init,
         addToCart,
         removeFromCart,
         refreshCart,
+        getProduct,
     }
 })
 

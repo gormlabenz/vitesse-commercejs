@@ -1,6 +1,6 @@
 <template>
     <div class="mx-auto mt-5">
-        <gallery />
+        <Products />
     </div>
 </template>
 

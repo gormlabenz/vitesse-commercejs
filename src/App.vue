@@ -5,7 +5,7 @@
 import { useCommerceStore } from './stores/commerce'
 
 const commerceStore = useCommerceStore()
-
+commerceStore.init()
 useHead({
     title: 'Vitesse',
     meta: [
