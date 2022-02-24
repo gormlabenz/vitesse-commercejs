@@ -13,7 +13,7 @@ export const useCommerceStore = defineStore('commerce', () => {
         error: null,
     })
     const products = reactive({
-        data: [],
+        data: null,
         isLoading: true,
         error: null,
     })
