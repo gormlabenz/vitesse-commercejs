@@ -2,6 +2,12 @@
     <div>
         <h2>{{ product.name }}</h2>
         <p v-html="product.description"></p>
+        <button
+            @click="commerceStore.addToCart(product)"
+            class="bg-blue-300 py-2 px-4"
+        >
+            Add To Card
+        </button>
     </div>
 </template>
 <script setup>
