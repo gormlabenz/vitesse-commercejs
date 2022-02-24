@@ -16,4 +16,3 @@ const commerceStore = useCommerceStore()
 
 const products = computed(() => commerceStore.products.data || [])
 </script>
-<style lang=""></style>

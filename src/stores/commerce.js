@@ -37,7 +37,7 @@ export const useCommerceStore = defineStore('commerce', () => {
         commerce.cart
             .add(product.id, 1)
             .then((resp) => {
-                cart.data = resp
+                cart.data = resp.cart
             })
             .catch((error) => {
                 cart.error = error
@@ -47,7 +47,7 @@ export const useCommerceStore = defineStore('commerce', () => {
         commerce.cart
             .remove(product.id)
             .then((resp) => {
-                cart.data = resp
+                cart.data = resp.cart
             })
             .catch((error) => {
                 cart.error = error
@@ -66,9 +66,17 @@ export const useCommerceStore = defineStore('commerce', () => {
         return products.data.find((p) => p.id === id)
     }
 
+    const totalPrice = computed(() => {
+        if (!cart.data) return 0
+        return cart.data.line_items.reduce((acc, item) => {
+            return acc + item.price.raw * item.quantity
+        }, 0)
+    })
+
     return {
         products,
         cart,
+        totalPrice,
         init,
         addToCart,
         removeFromCart,
