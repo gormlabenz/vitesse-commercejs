@@ -12,6 +12,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@chec/commerce.js": "^2.8.0",
     "@vueuse/core": "^7.6.1",
     "@vueuse/head": "^0.7.5",
     "nprogress": "^0.2.0",
