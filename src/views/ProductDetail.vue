@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1>{{ 'helo' }}</h1>
+        <h2>{{ product.name }}</h2>
+        <p v-html="product.description"></p>
     </div>
 </template>
 <script setup>
@@ -17,7 +18,7 @@ const props = defineProps({
 
 const { id } = toRefs(props)
 
-/* const product = computed(() =>
+const product = computed(() =>
     commerceStore.products.data.find((product) => product.id === id.value)
-) */
+)
 </script>
