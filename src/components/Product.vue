@@ -11,7 +11,6 @@ const props = defineProps({
         required: true,
     },
 })
-
 const { product } = toRefs(props)
 </script>
 <style lang=""></style>

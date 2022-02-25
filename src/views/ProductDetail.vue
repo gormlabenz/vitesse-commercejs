@@ -28,7 +28,7 @@ const { id } = toRefs(props)
 
 const product = computed(() =>
     commerceStore.ready
-        ? commerceStore.products.data.find((product) => product.id === id.value)
+        ? commerceStore.products.find((product) => product.id === id.value)
         : null
 )
 </script>

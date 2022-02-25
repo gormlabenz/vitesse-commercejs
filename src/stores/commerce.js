@@ -8,9 +8,10 @@ const commerce = new Commerce(
 
 export const useCommerceStore = defineStore('commerceStore', {
     state: () => ({
-        cart: { data: null, error: null },
-        products: { data: null, error: null },
+        cart: {},
+        products: [],
         ready: false,
+        error: null,
     }),
     actions: {
         async init() {
@@ -23,11 +24,11 @@ export const useCommerceStore = defineStore('commerceStore', {
                     cartResponse,
                 ])
 
-                this.products.data = productsData.data
-                this.cart.data = cartData
+                this.products = productsData.data
+                this.cart = cartData
             } catch (error) {
-                this.cart.error = error
-                this.products.error = error
+                this.error = error
+                this.error = error
             } finally {
                 this.ready = true
             }
@@ -36,20 +37,20 @@ export const useCommerceStore = defineStore('commerceStore', {
             commerce.cart
                 .add(product.id, 1)
                 .then((resp) => {
-                    this.cart.data = resp.cart
+                    this.cart = resp.cart
                 })
                 .catch((error) => {
-                    this.cart.error = error
+                    this.error = error
                 })
         },
         async removeFromCart(product) {
             commerce.cart
                 .remove(product.id)
                 .then((resp) => {
-                    this.cart.data = resp.cart
+                    this.cart = resp.cart
                 })
                 .catch((error) => {
-                    this.cart.error = error
+                    this.error = error
                 })
         },
         async refreshCart() {
@@ -57,13 +58,13 @@ export const useCommerceStore = defineStore('commerceStore', {
             commit('refreshCart')
         },
         getProduct: (id) => {
-            return this.products.data.find((p) => p.id === id)
+            return this.products.find((p) => p.id === id)
         },
     },
     getters: {
         totalPrice: (state) =>
-            state.cart.data
-                ? state.cart.data.line_items.reduce((acc, item) => {
+            state.ready
+                ? state.cart.line_items.reduce((acc, item) => {
                       return acc + item.price.raw * item.quantity
                   }, 0)
                 : 0,

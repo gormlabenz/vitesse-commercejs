@@ -14,5 +14,5 @@ import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
 
-const products = computed(() => commerceStore.products.data || [])
+const products = computed(() => commerceStore.products || [])
 </script>

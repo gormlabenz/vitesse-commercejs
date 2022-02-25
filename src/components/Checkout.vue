@@ -13,11 +13,11 @@ import { useCommerceStore } from '../stores/commerce'
 const commerceStore = useCommerceStore()
 
 const url = computed(() =>
-    commerceStore.cart.data ? commerceStore.cart.data.hosted_checkout_url : ''
+    commerceStore.cart ? commerceStore.cart.hosted_checkout_url : ''
 )
 
 const emtpy = computed(() =>
-    commerceStore.cart.data ? commerceStore.cart.data.total_items !== 0 : false
+    commerceStore.cart ? commerceStore.cart.total_items !== 0 : false
 )
 </script>
 <style lang=""></style>
