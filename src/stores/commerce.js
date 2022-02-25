@@ -12,6 +12,7 @@ export const useCommerceStore = defineStore('commerce', () => {
         isLoading: true,
         error: null,
     })
+
     const products = reactive({
         data: null,
         isLoading: true,
@@ -33,7 +34,7 @@ export const useCommerceStore = defineStore('commerce', () => {
         }
     }
 
-    const addToCart = (product) =>
+    const addToCart = (product) => {
         commerce.cart
             .add(product.id, 1)
             .then((resp) => {
@@ -42,8 +43,9 @@ export const useCommerceStore = defineStore('commerce', () => {
             .catch((error) => {
                 cart.error = error
             })
+    }
 
-    const removeFromCart = (product) =>
+    const removeFromCart = (product) => {
         commerce.cart
             .remove(product.id)
             .then((resp) => {
@@ -52,7 +54,7 @@ export const useCommerceStore = defineStore('commerce', () => {
             .catch((error) => {
                 cart.error = error
             })
-
+    }
     const refreshCart = () =>
         commerce.cart
             .refresh((c) => {
@@ -66,12 +68,13 @@ export const useCommerceStore = defineStore('commerce', () => {
         return products.data.find((p) => p.id === id)
     }
 
-    const totalPrice = computed(() => {
-        if (!cart.data) return 0
-        return cart.data.line_items.reduce((acc, item) => {
-            return acc + item.price.raw * item.quantity
-        }, 0)
-    })
+    const totalPrice = computed(() =>
+        cart.data
+            ? cart.data.line_items.reduce((acc, item) => {
+                  return acc + item.price.raw * item.quantity
+              }, 0)
+            : 0
+    )
 
     return {
         products,

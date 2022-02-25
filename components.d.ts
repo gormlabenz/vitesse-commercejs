@@ -4,11 +4,7 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Card: typeof import('./src/components/Card.vue')['default']
     Cart: typeof import('./src/components/Cart.vue')['default']
-    Counter: typeof import('./src/components/Counter.vue')['default']
-    Gallery: typeof import('./src/components/Gallery.vue')['default']
-    Preview: typeof import('./src/components/Preview.vue')['default']
     Product: typeof import('./src/components/Product.vue')['default']
     Products: typeof import('./src/components/Products.vue')['default']
   }
