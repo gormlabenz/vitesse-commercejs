@@ -7,13 +7,18 @@ import { useCommerceStore } from './stores/commerce'
 const commerceStore = useCommerceStore()
 commerceStore.init()
 useHead({
-    title: 'Vitesse',
+    title: 'Vitesse - CommerceJS',
     meta: [
-        { name: 'description', content: 'Opinionated Vite Starter Template' },
+        {
+            name: 'description',
+            content: 'Opinionated Vite Starter Template width CommerceJS',
+        },
     ],
 })
 </script>
 
 <template>
+    <Cart></Cart>
+    <Checkout></Checkout>
     <router-view />
 </template>

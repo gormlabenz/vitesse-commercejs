@@ -1,6 +1,4 @@
 <template>
-    <Cart></Cart>
-    <Checkout></Checkout>
     <div class="mx-auto mt-5">
         <Products />
     </div>
