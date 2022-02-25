@@ -5,6 +5,7 @@
 declare module 'vue' {
   export interface GlobalComponents {
     Cart: typeof import('./src/components/Cart.vue')['default']
+    Checkout: typeof import('./src/components/Checkout.vue')['default']
     Product: typeof import('./src/components/Product.vue')['default']
     Products: typeof import('./src/components/Products.vue')['default']
   }

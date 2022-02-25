@@ -1,7 +1,7 @@
 import Commerce from '@chec/commerce.js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-export const useCommerceStore = defineStore('commerce', () => {
+export const useCommerceStore = defineStore('commerceStore', () => {
     const commerce = new Commerce(
         import.meta.env.VITE_COMMERCEJS_PUBLIC_KEY,
         import.meta.PROD

@@ -1,5 +1,7 @@
 <template>
     <Cart></Cart>
+    <Checkout></Checkout>
+
     <div>
         <div v-if="product">
             <h1 class="text-2xl font-bold">{{ product.name }}</h1>
