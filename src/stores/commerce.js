@@ -6,92 +6,68 @@ const commerce = new Commerce(
     import.meta.PROD
 )
 
-export const useCommerceStore = defineStore('commerceStore', () => {
-    let ready = ref(false)
+export const useCommerceStore = defineStore('commerceStore', {
+    state: () => ({
+        cart: { data: null, error: null },
+        products: { data: null, error: null },
+        ready: false,
+    }),
+    actions: {
+        async init() {
+            try {
+                const productsResponse = commerce.products.list()
+                const cartResponse = commerce.cart.retrieve()
 
-    const cart = reactive({
-        data: null,
-        error: null,
-    })
+                const [productsData, cartData] = await Promise.all([
+                    productsResponse,
+                    cartResponse,
+                ])
 
-    const products = reactive({
-        data: null,
-        error: null,
-    })
-
-    const init = async () => {
-        try {
-            const productsResponse = commerce.products.list()
-            const cartResponse = commerce.cart.retrieve()
-
-            const [productsData, cartData] = await Promise.all([
-                productsResponse,
-                cartResponse,
-            ])
-
-            products.data = productsData.data
-            cart.data = cartData
-        } catch (error) {
-            cart.error = error
-            products.error = error
-        } finally {
-            ready.value = true
-        }
-    }
-
-    const addToCart = (product) => {
-        commerce.cart
-            .add(product.id, 1)
-            .then((resp) => {
-                cart.data = resp.cart
-            })
-            .catch((error) => {
-                cart.error = error
-            })
-    }
-
-    const removeFromCart = (product) => {
-        commerce.cart
-            .remove(product.id)
-            .then((resp) => {
-                cart.data = resp.cart
-            })
-            .catch((error) => {
-                cart.error = error
-            })
-    }
-    const refreshCart = () =>
-        commerce.cart
-            .refresh((c) => {
-                cart.data = c
-            })
-            .catch((error) => {
-                cart.error = error
-            })
-
-    function getProduct(id) {
-        return products.data.find((p) => p.id === id)
-    }
-
-    const totalPrice = computed(() =>
-        cart.data
-            ? cart.data.line_items.reduce((acc, item) => {
-                  return acc + item.price.raw * item.quantity
-              }, 0)
-            : 0
-    )
-
-    return {
-        ready,
-        products,
-        cart,
-        totalPrice,
-        init,
-        addToCart,
-        removeFromCart,
-        refreshCart,
-        getProduct,
-    }
+                this.products.data = productsData.data
+                this.cart.data = cartData
+            } catch (error) {
+                this.cart.error = error
+                this.products.error = error
+            } finally {
+                this.ready = true
+            }
+        },
+        async addToCart(product) {
+            commerce.cart
+                .add(product.id, 1)
+                .then((resp) => {
+                    this.cart.data = resp.cart
+                })
+                .catch((error) => {
+                    this.cart.error = error
+                })
+        },
+        async removeFromCart(product) {
+            commerce.cart
+                .remove(product.id)
+                .then((resp) => {
+                    this.cart.data = resp.cart
+                })
+                .catch((error) => {
+                    this.cart.error = error
+                })
+        },
+        async refreshCart() {
+            await commerce.refreshCart()
+            commit('refreshCart')
+        },
+        getProduct: (id) => {
+            return this.products.data.find((p) => p.id === id)
+        },
+    },
+    getters: {
+        totalPrice: (state) =>
+            state.cart.data
+                ? state.cart.data.line_items.reduce((acc, item) => {
+                      return acc + item.price.raw * item.quantity
+                  }, 0)
+                : 0,
+    },
 })
 
 if (import.meta.hot)
