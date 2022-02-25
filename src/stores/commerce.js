@@ -1,12 +1,12 @@
 import Commerce from '@chec/commerce.js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-export const useCommerceStore = defineStore('commerceStore', () => {
-    const commerce = new Commerce(
-        import.meta.env.VITE_COMMERCEJS_PUBLIC_KEY,
-        import.meta.PROD
-    )
+const commerce = new Commerce(
+    import.meta.env.VITE_COMMERCEJS_PUBLIC_KEY,
+    import.meta.PROD
+)
 
+export const useCommerceStore = defineStore('commerceStore', () => {
     const cart = reactive({
         data: null,
         isLoading: true,
@@ -21,10 +21,19 @@ export const useCommerceStore = defineStore('commerceStore', () => {
 
     const init = async () => {
         try {
-            const productsResponse = await commerce.products.list()
-            products.data = productsResponse.data
-            const cartResponse = await commerce.cart.retrieve()
-            cart.data = cartResponse
+            const productsResponse = commerce.products.list()
+            const cartResponse = commerce.cart.retrieve()
+
+            const [productsData, cartData] = await Promise.all([
+                productsResponse,
+                cartResponse,
+            ])
+
+            products.data = productsData.data
+            cart.data = cartData
+
+            products.isLoading = false
+            cart.isLoading = false
         } catch (error) {
             cart.error = error
             products.error = error
