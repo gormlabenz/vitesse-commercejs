@@ -6,5 +6,5 @@ export const routes = [
         path: '/',
         component: Home,
     },
-    { path: '/product/:id', component: ProductDetail, props: true },
+    { path: '/product/:permalink', component: ProductDetail, props: true },
 ]

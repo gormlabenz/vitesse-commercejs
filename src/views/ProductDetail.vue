@@ -18,17 +18,19 @@ import { useCommerceStore } from '../stores/commerce'
 const commerceStore = useCommerceStore()
 
 const props = defineProps({
-    id: {
+    permalink: {
         type: String,
         required: true,
     },
 })
 
-const { id } = toRefs(props)
-
+const { permalink } = toRefs(props)
+console.log(permalink.value)
 const product = computed(() =>
     commerceStore.ready
-        ? commerceStore.products.find((product) => product.id === id.value)
+        ? commerceStore.products.find(
+              (product) => product.permalink === permalink.value
+          )
         : null
 )
 </script>

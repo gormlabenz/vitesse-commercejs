@@ -57,9 +57,6 @@ export const useCommerceStore = defineStore('commerceStore', {
             await commerce.refreshCart()
             commit('refreshCart')
         },
-        getProduct: (id) => {
-            return this.products.find((p) => p.id === id)
-        },
     },
     getters: {
         totalPrice: (state) =>
