@@ -7,6 +7,8 @@ const commerce = new Commerce(
 )
 
 export const useCommerceStore = defineStore('commerceStore', () => {
+    let ready = false
+
     const cart = reactive({
         data: null,
         isLoading: true,
@@ -40,6 +42,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         } finally {
             cart.isLoading = false
             products.isLoading = false
+            ready = true
         }
     }
 

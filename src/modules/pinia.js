@@ -24,7 +24,11 @@ export const install = async ({ isClient, initialState, app, router }) => {
             store.cart = initialState.pinia.cart
             store.products = initialState.pinia.products
         }
-        store.init()
         console.log('[Client] state:', router)
     }
+
+    router.beforeEach((to, from, next) => {
+        if (!store.ready) store.init()
+        next()
+    })
 }
