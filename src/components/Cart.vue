@@ -25,11 +25,11 @@ import { useCommerceStore } from '../stores/commerce'
 const commerceStore = useCommerceStore()
 
 const totalItems = computed(() =>
-    !commerceStore.cart.isLoading ? commerceStore.cart.data.total_items : 0
+    commerceStore.ready ? commerceStore.cart.data.total_items : 0
 )
 
 const lineItems = computed(() =>
-    !commerceStore.cart.isLoading ? commerceStore.cart.data.line_items : []
+    commerceStore.ready ? commerceStore.cart.data.line_items : []
 )
 
 const open = ref(false)

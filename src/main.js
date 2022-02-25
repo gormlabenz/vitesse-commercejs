@@ -10,14 +10,18 @@ export const createApp = ViteSSG(
     { routes, base: import.meta.env.BASE_URL },
     async (ctx) => {
         // install all modules under `modules/`
-        /*         Object.values(import.meta.globEager('./modules/*.js')).forEach((i) => {
-          await  i.install?.(ctx)
-            console.log(i)
-        }) */
-        for (const i of Object.values(
-            import.meta.globEager('./modules/*.js')
-        )) {
-            await i.install?.(ctx)
+        if (ctx.isClient) {
+            Object.values(import.meta.globEager('./modules/*.js')).forEach(
+                (i) => {
+                    i.install?.(ctx)
+                }
+            )
+        } else {
+            for (const i of Object.values(
+                import.meta.globEager('./modules/*.js')
+            )) {
+                await i.install?.(ctx)
+            }
         }
     }
 )

@@ -7,17 +7,15 @@ const commerce = new Commerce(
 )
 
 export const useCommerceStore = defineStore('commerceStore', () => {
-    let ready = false
+    let ready = ref(false)
 
     const cart = reactive({
         data: null,
-        isLoading: true,
         error: null,
     })
 
     const products = reactive({
         data: null,
-        isLoading: true,
         error: null,
     })
 
@@ -33,16 +31,11 @@ export const useCommerceStore = defineStore('commerceStore', () => {
 
             products.data = productsData.data
             cart.data = cartData
-
-            products.isLoading = false
-            cart.isLoading = false
         } catch (error) {
             cart.error = error
             products.error = error
         } finally {
-            cart.isLoading = false
-            products.isLoading = false
-            ready = true
+            ready.value = true
         }
     }
 
@@ -89,6 +82,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     )
 
     return {
+        ready,
         products,
         cart,
         totalPrice,
