@@ -17,7 +17,6 @@ export const createApp = ViteSSG(
         for (const i of Object.values(
             import.meta.globEager('./modules/*.js')
         )) {
-            console.log('i', i)
             await i.install?.(ctx)
         }
     }

@@ -3,18 +3,28 @@ import { createPinia } from 'pinia'
 
 // Setup Pinia
 // https://pinia.esm.dev/
-export const install = async ({ isClient, initialState, app }) => {
+export const install = async ({ isClient, initialState, app, router }) => {
     const pinia = createPinia()
     app.use(pinia)
     // Refer to
     // https://github.com/antfu/vite-ssg/blob/main/README.md#state-serialization
     // for other serialization strategies.
-    if (import.meta.env.SSR) {
-        const store = useCommerceStore()
-        await store.init()
+    const store = useCommerceStore()
 
-        initialState.data = store
+    if (import.meta.env.SSR) {
+        await store.init()
+        // initialState.pinia = store
+        initialState.pinia = {
+            cart: { ...store.cart },
+            products: { ...store.products },
+        }
+        console.log('[SSG] state:', initialState.pinia)
     } else {
-        pinia.state.value = initialState.pinia
+        if (initialState.pinia) {
+            store.cart = initialState.pinia.cart
+            store.products = initialState.pinia.products
+        }
+        store.init()
+        console.log('[Client] state:', router)
     }
 }
