@@ -12,6 +12,31 @@ export const useCommerceStore = defineStore('commerceStore', {
         products: [],
         ready: false,
         error: null,
+        checkoutForm: {
+            customer: {
+                firstName: 'Jane',
+                lastName: 'Doe',
+                email: 'janedoe@email.com',
+            },
+            shipping: {
+                name: 'Jane Doe',
+                street: '123 Fake St',
+                city: 'San Francisco',
+                stateProvince: 'CA',
+                postalZipCode: '94107',
+                country: 'US',
+            },
+            fulfillment: {
+                shippingOption: '',
+            },
+            payment: {
+                cardNum: '4242 4242 4242 4242',
+                expMonth: '01',
+                expYear: '2023',
+                ccv: '123',
+                billingPostalZipCode: '94107',
+            },
+        },
     }),
     actions: {
         async init() {
@@ -56,6 +81,28 @@ export const useCommerceStore = defineStore('commerceStore', {
         async refreshCart() {
             await commerce.refreshCart()
             commit('refreshCart')
+        },
+        async generateCheckoutToken() {
+            try {
+                const token = await commerce.checkout.generateToken(
+                    this.cart.id,
+                    { type: 'cart' }
+                )
+                console.log(token)
+                return token
+            } catch (error) {
+                this.error = error
+            }
+        },
+        async checkout() {
+            try {
+                const checkoutToken = await this.generateCheckoutToken()
+                const checkoutResponse = await commerce.checkout(checkoutToken)
+                console.log(checkoutToken, checkoutResponse)
+                return checkoutResponse
+            } catch (error) {
+                this.error = error
+            }
         },
     },
     getters: {

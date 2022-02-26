@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const { permalink } = toRefs(props)
-console.log(permalink.value)
+
 const product = computed(() =>
     commerceStore.ready
         ? commerceStore.products.find(
