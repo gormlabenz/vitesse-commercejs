@@ -41,6 +41,7 @@ export const useCommerceStore = defineStore('commerceStore', {
         liveObject: {},
         countries: [],
         shippingSubdivisions: [],
+        shippingOptions: [],
         fulfillment: [],
     }),
     actions: {
@@ -139,6 +140,24 @@ export const useCommerceStore = defineStore('commerceStore', {
             } catch (error) {
                 console.log(
                     'There was an error fetching a list of shipping subdivisions',
+                    error
+                )
+            }
+        },
+        async fetchShippingOptions() {
+            try {
+                const options = await commerce.checkout.getShippingOptions(
+                    this.checkoutToken.id,
+                    {
+                        country: this.checkoutForm.shipping.country,
+                        region: this.checkoutForm.shipping.stateProvince,
+                    }
+                )
+                console.log('Shipping options:', options)
+                this.shippingOptions = options
+            } catch (error) {
+                console.log(
+                    'There was an error fetching the shipping methods',
                     error
                 )
             }

@@ -85,6 +85,7 @@
         <select
             v-model="commerceStore.checkoutForm.shipping.stateProvince"
             name="stateProvince"
+            @change="commerceStore.fetchShippingOptions()"
         >
             <option value="" disabled>State/province</option>
             <option
@@ -95,6 +96,23 @@
                 :key="index"
             >
                 {{ subdivision }}
+            </option>
+        </select>
+        <label for="shippingOption">Shipping method</label>
+        <select
+            v-model="commerceStore.checkoutForm.fulfillment.shippingOption"
+            name="shippingOption"
+        >
+            <option value="" disabled>Select a shipping method</option>
+            <option
+                class="checkout__select-option"
+                v-for="(method, index) in commerceStore.shippingOptions"
+                :value="method.id"
+                :key="index"
+            >
+                {{
+                    `${method.description} - $${method.price.formatted_with_code}`
+                }}
             </option>
         </select>
 
