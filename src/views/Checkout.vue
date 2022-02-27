@@ -1,10 +1,9 @@
 <template>
-    <form class="checkout__form">
-        <h4 class="checkout__subheading">Customer information</h4>
+    <form class="flex flex-col">
+        <h4 class="text-2xl font-bold">Customer information</h4>
 
-        <label class="checkout__label" for="firstName">First name</label>
+        <label for="firstName">First name</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.customer.firstName"
             name="firstName"
@@ -12,9 +11,8 @@
             required
         />
 
-        <label class="checkout__label" for="lastName">Last name</label>
+        <label for="lastName">Last name</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.customer.lastName"
             name="lastName"
@@ -22,9 +20,8 @@
             required
         />
 
-        <label class="checkout__label" for="email">Email</label>
+        <label for="email">Email</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.customer.email"
             name="email"
@@ -32,11 +29,10 @@
             required
         />
 
-        <h4 class="checkout__subheading">Shipping details</h4>
+        <h4>Shipping details</h4>
 
-        <label class="checkout__label" for="fullname">Full name</label>
+        <label for="fullname">Full name</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.shipping.name"
             name="name"
@@ -44,9 +40,8 @@
             required
         />
 
-        <label class="checkout__label" for="street">Street address</label>
+        <label for="street">Street address</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.shipping.street"
             name="street"
@@ -54,9 +49,8 @@
             required
         />
 
-        <label class="checkout__label" for="city">City</label>
+        <label for="city">City</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.shipping.city"
             name="city"
@@ -64,57 +58,82 @@
             required
         />
 
-        <label class="checkout__label" for="postalZipCode"
-            >Postal/Zip code</label
-        >
+        <label for="postalZipCode">Postal/Zip code</label>
         <input
-            class="checkout__input"
             type="text"
             v-model="commerceStore.checkoutForm.shipping.postalZipCode"
             name="postalZipCode"
             placeholder="Enter your postal/zip code"
             required
         />
+        <label for="country">Country</label>
+        <select
+            v-model="commerceStore.checkoutForm.shipping.country"
+            name="country"
+            @select="commerceStore.validateShippingOption"
+        >
+            <option value="" disabled>Country</option>
+            <option
+                v-for="(country, index) in commerceStore.countries"
+                :value="index"
+                :key="index"
+            >
+                {{ country }}
+            </option>
+        </select>
 
-        <h4 class="checkout__subheading">Payment information</h4>
+        <label for="stateProvince">State/province</label>
+        <select
+            v-model="commerceStore.checkoutForm.shipping.stateProvince"
+            name="stateProvince"
+        >
+            <option value="" disabled>State/province</option>
+            <option
+                v-for="(
+                    subdivision, index
+                ) in commerceStore.shippingSubdivisions"
+                :value="index"
+                :key="index"
+            >
+                {{ subdivision }}
+            </option>
+        </select>
 
-        <label class="checkout__label" for="cardNum">Credit card number</label>
+        <h4>Payment information</h4>
+
+        <label for="cardNum">Credit card number</label>
         <input
-            class="checkout__input"
             type="text"
             name="cardNum"
             v-model="commerceStore.checkoutForm.payment.cardNum"
             placeholder="Enter your card number"
         />
 
-        <label class="checkout__label" for="expMonth">Expiry month</label>
+        <label for="expMonth">Expiry month</label>
         <input
-            class="checkout__input"
             type="text"
             name="expMonth"
             v-model="commerceStore.checkoutForm.payment.expMonth"
             placeholder="Card expiry month"
         />
 
-        <label class="checkout__label" for="expYear">Expiry year</label>
+        <label for="expYear">Expiry year</label>
         <input
-            class="checkout__input"
             type="text"
             name="expYear"
             v-model="commerceStore.checkoutForm.payment.expYear"
             placeholder="Card expiry year"
         />
 
-        <label class="checkout__label" for="ccv">CCV</label>
+        <label for="ccv">CCV</label>
         <input
-            class="checkout__input"
             type="text"
             name="ccv"
             v-model="commerceStore.checkoutForm.payment.ccv"
             placeholder="CCV (3 digits)"
         />
 
-        <button class="checkout__btn-confirm" @click.prevent="confirmOrder">
+        <button class="bg-red-300 px-4 py-2" @click.prevent="confirmOrder">
             Confirm order
         </button>
     </form>
@@ -124,4 +143,4 @@ import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
 </script>
-<style lang=""></style>
+<style scoped></style>

@@ -15,6 +15,6 @@ useHead({
 
 <template>
     <Cart></Cart>
-    <Checkout></Checkout>
+    <CheckoutButton></CheckoutButton>
     <router-view />
 </template>

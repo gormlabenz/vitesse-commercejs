@@ -12,6 +12,7 @@ export const useCommerceStore = defineStore('commerceStore', {
         products: [],
         ready: false,
         error: null,
+        checkoutToken: null,
         checkoutForm: {
             customer: {
                 firstName: 'Jane',
@@ -37,6 +38,10 @@ export const useCommerceStore = defineStore('commerceStore', {
                 billingPostalZipCode: '94107',
             },
         },
+        liveObject: {},
+        countries: [],
+        shippingSubdivisions: [],
+        fulfillment: [],
     }),
     actions: {
         async init() {
@@ -84,23 +89,91 @@ export const useCommerceStore = defineStore('commerceStore', {
         },
         async generateCheckoutToken() {
             try {
-                const token = await commerce.checkout.generateToken(
+                const checkoutToken = await commerce.checkout.generateToken(
                     this.cart.id,
                     { type: 'cart' }
                 )
-                console.log(token)
-                return token
+                this.checkoutToken = checkoutToken
             } catch (error) {
                 this.error = error
             }
         },
+        async getLiveObject() {
+            try {
+                const liveObject = await commerce.checkout.getLive(
+                    this.checkoutToken
+                )
+                this.liveObject = liveObject
+            } catch (error) {
+                console.error(error)
+                this.error = error
+            }
+        },
+        async fetchShippingCountries() {
+            try {
+                const countries =
+                    await commerce.services.localeListShippingCountries(
+                        this.checkoutToken
+                    )
+                this.countries = countries.countries
+            } catch (error) {
+                console.log(
+                    'There was an error fetching a list of countries',
+                    error
+                )
+            }
+        },
+        async fetchShippingSubdivisions(countryCode) {
+            try {
+                const shippingSubdivisions =
+                    await commerce.services.localeListShippingSubdivisions(
+                        this.checkoutToken,
+                        countryCode
+                    )
+                this.shippingSubdivisions = shippingSubdivisions.subdivisions
+            } catch (error) {
+                console.log(
+                    'There was an error fetching a list of shipping subdivisions',
+                    error
+                )
+            }
+        },
+        async validateShippingOption(shippingOptionId) {
+            try {
+                const fulfillment = await commerce.checkout.checkShippingOption(
+                    this.checkoutToken,
+                    {
+                        shipping_option_id: shippingOptionId,
+                        country: this.checkoutForm.shipping.country,
+                        region: this.checkoutForm.shipping.stateProvince,
+                    }
+                )
+                this.fulfillment.shippingOption = fulfillment.id
+                this.liveObject = fulfillment.live
+            } catch (error) {
+                console.log(
+                    'There was an error setting the shipping option',
+                    error
+                )
+            }
+        },
         async checkout() {
             try {
-                const checkoutToken = await this.generateCheckoutToken()
-                const checkoutResponse = await commerce.checkout(checkoutToken)
-                console.log(checkoutToken, checkoutResponse)
-                return checkoutResponse
+                await this.generateCheckoutToken()
+                console.log('Checkout token generated', this.checkoutToken)
+                await this.getLiveObject()
+                console.log('Live object generated', this.liveObject)
+                await this.fetchShippingCountries()
+                console.log('Shipping countries fetched', this.countries)
+                await this.fetchShippingSubdivisions(
+                    this.checkoutForm.shipping.country
+                )
+                console.log(
+                    'Shipping subdivisions fetched',
+                    this.shippingSubdivisions
+                )
             } catch (error) {
+                console.error(error)
                 this.error = error
             }
         },
