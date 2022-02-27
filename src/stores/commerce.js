@@ -15,27 +15,27 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const checkoutToken = ref(null)
     const checkoutForm = ref({
         customer: {
-            firstName: 'Jane',
-            lastName: 'Doe',
-            email: 'janedoe@email.com',
+            firstName: '',
+            lastName: '',
+            email: '',
         },
         shipping: {
-            name: 'Jane Doe',
-            street: '123 Fake St',
-            city: 'San Francisco',
-            stateProvince: 'CA',
-            postalZipCode: '94107',
-            country: 'US',
+            name: '',
+            street: '',
+            city: '',
+            stateProvince: '',
+            postalZipCode: '',
+            country: '',
         },
         fulfillment: {
             shippingOption: '',
         },
         payment: {
-            cardNum: '4242 4242 4242 4242',
-            expMonth: '01',
-            expYear: '2023',
-            ccv: '123',
-            billingPostalZipCode: '94107',
+            cardNum: '',
+            expMonth: '',
+            expYear: '',
+            ccv: '',
+            billingPostalZipCode: '',
         },
     })
     const liveObject = ref({})
@@ -246,7 +246,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             console.log('There was an error confirming your order', error)
         }
     }
-
     const totalPrice = computed(() =>
         ready.value
             ? cart.value.line_items.reduce((acc, item) => {
@@ -254,7 +253,28 @@ export const useCommerceStore = defineStore('commerceStore', () => {
               }, 0)
             : 0
     )
-
+    watch(cart, () => {
+        if (cart.value.line_items.length > 0) generateCheckoutToken()
+    })
+    watch(checkoutToken, () => {
+        if (checkoutToken.value) {
+            getLiveObject()
+            fetchShippingCountries()
+        }
+    })
+    watch([checkoutToken, checkoutForm], () => {
+        if (checkoutToken.value) {
+            if (checkoutForm.value.shipping.country) {
+                fetchShippingSubdivisions()
+            }
+            if (
+                checkoutForm.value.shipping.country !== '' &&
+                checkoutForm.value.shipping.stateProvince !== ''
+            ) {
+                fetchShippingOptions()
+            }
+        }
+    })
     return {
         init,
         addToCart,

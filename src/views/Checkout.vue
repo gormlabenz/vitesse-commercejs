@@ -163,5 +163,25 @@
 import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
+
+/* onMounted(() => {
+    if (commerceStore.checkoutToken === null) {
+        return
+    }
+    if (commerceStore.checkoutForm.shipping.country) {
+        commerceStore.fetchShippingSubdivisions()
+    }
+    commerceStore.getLiveObject()
+})
+
+watch(
+    commerceStore.checkoutForm.fulfillment.shippingOption,
+    (newVal, oldVal) => {
+        if (newVal === oldVal) {
+            return
+        }
+        commerceStore.validateShippingOption()
+    }
+) */
 </script>
 <style scoped></style>
