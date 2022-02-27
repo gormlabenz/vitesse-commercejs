@@ -43,11 +43,11 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const shippingSubdivisions = ref([])
     const shippingOptions = ref([])
     const fulfillment = ref([])
-    const orderData = ref({})
-    const order = ref({})
 
     const paymentMethodPaypal = ref(true)
     const paymentMethodCard = ref(false)
+
+    const paypalAuth = ref({})
 
     const init = async () => {
         try {
@@ -185,65 +185,11 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             console.log('There was an error setting the shipping option', error)
         }
     }
-    const checkout = async () => {
-        try {
-            await generateCheckoutToken()
-            console.log('Checkout token generated', checkoutToken.value)
-            await getLiveObject()
-            console.log('Live object generated', liveObject.value)
-            await fetchShippingCountries()
-            console.log('Shipping countries fetched', countries.value)
-            await fetchShippingSubdivisions(checkoutForm.value.shipping.country)
-            console.log(
-                'Shipping subdivisions fetched',
-                shippingSubdivisions.value
-            )
-        } catch (error) {
-            console.error(error)
-            error.value = error
-        }
+    const validateCheckoutForm = async () => {
+        console.log('validateCheckoutForm', Object.values(checkoutForm.value))
     }
-    const confirmOrder = async () => {
-        orderData.value = {
-            line_items: checkoutToken.value.live.line_items,
-            customer: {
-                firstname: checkoutForm.value.customer.firstName,
-                lastname: checkoutForm.value.customer.lastName,
-                email: checkoutForm.value.customer.email,
-            },
-            shipping: {
-                name: checkoutForm.value.shipping.name,
-                street: checkoutForm.value.shipping.street,
-                town_city: checkoutForm.value.shipping.city,
-                county_state: checkoutForm.value.shipping.stateProvince,
-                postal_zip_code: checkoutForm.value.shipping.postalZipCode,
-                country: checkoutForm.value.shipping.country,
-            },
-            fulfillment: {
-                shipping_method: checkoutForm.value.fulfillment.shippingOption,
-            },
-            payment: paymentMethodPaypal.value
-                ? {
-                      gateway: 'paypal',
-                      paypal: {
-                          action: 'authorize',
-                      },
-                  }
-                : {
-                      gateway: 'test_gateway',
-                      card: {
-                          number: checkoutForm.value.payment.cardNum,
-                          expiry_month: checkoutForm.value.payment.expMonth,
-                          expiry_year: checkoutForm.value.payment.expYear,
-                          cvc: checkoutForm.value.payment.ccv,
-                          postal_zip_code:
-                              checkoutForm.value.payment.billingPostalZipCode,
-                      },
-                  },
-        }
-    }
-    const handleConfirmOrder = async () => {
-        await confirmOrder()
+
+    const captureOrder = async () => {
         try {
             const order = await commerce.checkout.capture(
                 checkoutToken.value.id,
@@ -256,6 +202,77 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             console.log('There was an error confirming your order', error)
         }
     }
+    const getPaypalPaymentId = async () => {
+        try {
+            // Use a checkout token ID that was generated earlier, and any order details that may have been collected
+            // on this page.
+            const paypalAuthData = await commerce.checkout.capture(
+                checkoutToken.value.id,
+                orderData.value
+            )
+            console.log('Paypal auth data:', paypalAuthData)
+            paypalAuth.value = paypalAuthData
+            // If we get here, we can now push the user to the PayPal URL.
+            // An example of rendering the PayPal button is below
+            renderPaypalButton()
+            return
+        } catch (response) {
+            // There was an issue with capturing the order with Commerce.js
+            console.log(response)
+            alert(response.message)
+            return
+        } finally {
+            // Any loading state can be removed here.
+        }
+    }
+    const renderPaypalButton = async () => {
+        paypal.Button.render(
+            {
+                env: 'sandbox', // Or 'production',
+                commit: true, // Show a 'Pay Now' button
+                payment: function () {
+                    return paypalAuth.value.payment_id // The payment ID from earlier
+                },
+                onAuthorize: function (data, actions) {
+                    // Handler if customer DOES authorize payment (this is where you get the payment_id & payer_id you need to pass to Chec)
+                    captureOrder(data)
+                },
+                onCancel: function (data, actions) {
+                    // Handler if customer does not authorize payment
+                },
+            },
+            '#paypal-button-container'
+        )
+    }
+
+    /* const captureOrder = async () => {
+        try {
+            // Complete capturing the order.
+            const order = await commerce.checkout.capture(checkoutTokenId, {
+                ...orderDetails,
+                // We have now changed the action to "capture" as well as included the "payment_id and "payer_id"
+                payment: {
+                    gateway: 'paypal',
+                    paypal: {
+                        action: 'capture',
+                        payment_id: 'PAY-51028384J84281644LGFZXJQ',
+                        payer_id: 'VE57TQRTVER5Y',
+                    },
+                },
+            })
+
+            // If we get here, the order has been successfully captured and the order detail is part of the `order` variable
+            console.log(order)
+            return
+        } catch (response) {
+            // There was an issue capturing the order with Commerce.js
+            console.log(response)
+            alert(response.message)
+            return
+        } finally {
+            // Any loading state can be removed here.
+        }
+    } */
     const totalPrice = computed(() =>
         ready.value
             ? cart.value.line_items.reduce((acc, item) => {
@@ -263,6 +280,58 @@ export const useCommerceStore = defineStore('commerceStore', () => {
               }, 0)
             : 0
     )
+    const orderData = computed(() => ({
+        line_items: checkoutToken.value.live.line_items,
+        customer: {
+            firstname: checkoutForm.value.customer.firstName,
+            lastname: checkoutForm.value.customer.lastName,
+            email: checkoutForm.value.customer.email,
+        },
+        shipping: {
+            name: checkoutForm.value.shipping.name,
+            street: checkoutForm.value.shipping.street,
+            town_city: checkoutForm.value.shipping.city,
+            county_state: checkoutForm.value.shipping.stateProvince,
+            postal_zip_code: checkoutForm.value.shipping.postalZipCode,
+            country: checkoutForm.value.shipping.country,
+        },
+        fulfillment: {
+            shipping_method: checkoutForm.value.fulfillment.shippingOption,
+        },
+        payment: paymentData.value,
+    }))
+    const paymentData = computed(() => {
+        if (paymentMethodPaypal.value) {
+            if (paypalAuth.value) {
+                return {
+                    gateway: 'paypal',
+                    paypal: {
+                        action: 'capture',
+                        payment_id: paypalAuth.value.payment_id,
+                        payer_id: paypalAuth.value.payer_id,
+                    },
+                }
+            }
+            return {
+                gateway: 'paypal',
+                paypal: {
+                    action: 'authorize',
+                },
+            }
+        } else if (paymentMethodCreditCard.value) {
+            return {
+                gateway: 'test_gateway',
+                card: {
+                    number: checkoutForm.value.payment.cardNum,
+                    expiry_month: checkoutForm.value.payment.expMonth,
+                    expiry_year: checkoutForm.value.payment.expYear,
+                    cvc: checkoutForm.value.payment.ccv,
+                    postal_zip_code:
+                        checkoutForm.value.payment.billingPostalZipCode,
+                },
+            }
+        }
+    })
     watch(cart, () => {
         if (cart.value.line_items.length > 0) generateCheckoutToken()
     })
@@ -270,6 +339,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         if (checkoutToken.value) {
             getLiveObject()
             fetchShippingCountries()
+            //getPaypalPaymentId()
         }
     })
     watch([checkoutToken, checkoutForm], () => {
@@ -302,9 +372,8 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         fetchShippingSubdivisions,
         fetchShippingOptions,
         validateShippingOption,
-        checkout,
-        confirmOrder,
-        handleConfirmOrder,
+        validateCheckoutForm,
+        captureOrder,
         paymentMethodCard,
         paymentMethodPaypal,
         totalPrice,

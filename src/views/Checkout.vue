@@ -137,6 +137,10 @@
                 </div>
             </div>
             <div
+                v-if="commerceStore.paymentMethodPaypal"
+                id="paypal-button-container"
+            ></div>
+            <div
                 class="mt-6 flex flex-col"
                 v-if="commerceStore.paymentMethodCard"
             >
@@ -172,8 +176,14 @@
         </div>
     </form>
     <button
+        class="bg-orange-300 px-4 py-2"
+        @click="commerceStore.validateCheckoutForm()"
+    >
+        Validate
+    </button>
+    <button
         class="bg-red-300 px-4 py-2"
-        @click.prevent="commerceStore.handleConfirmOrder()"
+        @click.prevent="commerceStore.captureOrder()"
     >
         Confirm order
     </button>
