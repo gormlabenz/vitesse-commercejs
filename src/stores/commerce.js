@@ -43,6 +43,7 @@ export const useCommerceStore = defineStore('commerceStore', {
         shippingSubdivisions: [],
         shippingOptions: [],
         fulfillment: [],
+        orderData: {},
     }),
     actions: {
         async init() {
@@ -162,16 +163,18 @@ export const useCommerceStore = defineStore('commerceStore', {
                 )
             }
         },
-        async validateShippingOption(shippingOptionId) {
+        async validateShippingOption() {
             try {
                 const fulfillment = await commerce.checkout.checkShippingOption(
                     this.checkoutToken,
                     {
-                        shipping_option_id: shippingOptionId,
+                        shipping_option_id:
+                            this.checkoutForm.fulfillment.shippingOption,
                         country: this.checkoutForm.shipping.country,
                         region: this.checkoutForm.shipping.stateProvince,
                     }
                 )
+                console.log('Fulfillment:', fulfillment)
                 this.fulfillment.shippingOption = fulfillment.id
                 this.liveObject = fulfillment.live
             } catch (error) {
@@ -199,6 +202,52 @@ export const useCommerceStore = defineStore('commerceStore', {
             } catch (error) {
                 console.error(error)
                 this.error = error
+            }
+        },
+        async confirmOrder() {
+            this.orderData = {
+                line_items: this.checkoutToken.live.line_items,
+                customer: {
+                    firstname: this.checkoutForm.customer.firstName,
+                    lastname: this.checkoutForm.customer.lastName,
+                    email: this.checkoutForm.customer.email,
+                },
+                shipping: {
+                    name: this.checkoutForm.shipping.name,
+                    street: this.checkoutForm.shipping.street,
+                    town_city: this.checkoutForm.shipping.city,
+                    county_state: this.checkoutForm.shipping.stateProvince,
+                    postal_zip_code: this.checkoutForm.shipping.postalZipCode,
+                    country: this.checkoutForm.shipping.country,
+                },
+                fulfillment: {
+                    shipping_method:
+                        this.checkoutForm.fulfillment.shippingOption,
+                },
+                payment: {
+                    gateway: 'test_gateway',
+                    card: {
+                        number: this.checkoutForm.payment.cardNum,
+                        expiry_month: this.checkoutForm.payment.expMonth,
+                        expiry_year: this.checkoutForm.payment.expYear,
+                        cvc: this.checkoutForm.payment.ccv,
+                        postal_zip_code:
+                            this.checkoutForm.payment.billingPostalZipCode,
+                    },
+                },
+            }
+        },
+        async handleConfirmOrder() {
+            await this.confirmOrder()
+            try {
+                const order = await commerce.checkout.capture(
+                    this.checkoutToken.id,
+                    this.orderData
+                )
+                this.order = order
+                console.log('Order captured', order)
+            } catch (error) {
+                console.log('There was an error confirming your order', error)
             }
         },
     },

@@ -102,6 +102,7 @@
         <select
             v-model="commerceStore.checkoutForm.fulfillment.shippingOption"
             name="shippingOption"
+            @change="commerceStore.validateShippingOption()"
         >
             <option value="" disabled>Select a shipping method</option>
             <option
@@ -150,7 +151,10 @@
             placeholder="CCV (3 digits)"
         />
 
-        <button class="bg-red-300 px-4 py-2" @click.prevent="confirmOrder">
+        <button
+            class="bg-red-300 px-4 py-2"
+            @click.prevent="commerceStore.handleConfirmOrder()"
+        >
             Confirm order
         </button>
     </form>
