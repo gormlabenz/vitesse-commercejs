@@ -1,5 +1,6 @@
 import Commerce from '@chec/commerce.js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 
 const commerce = new Commerce(
     import.meta.env.VITE_COMMERCEJS_PUBLIC_KEY,
@@ -245,6 +246,7 @@ export const useCommerceStore = defineStore('commerceStore', {
                     this.orderData
                 )
                 this.order = order
+                useRouter().push('/confirmation')
                 console.log('Order captured', order)
             } catch (error) {
                 console.log('There was an error confirming your order', error)
