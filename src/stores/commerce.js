@@ -46,7 +46,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const orderData = ref({})
     const order = ref({})
 
-    const paymentMethodPaypal = ref(false)
+    const paymentMethodPaypal = ref(true)
     const paymentMethodCard = ref(false)
 
     const init = async () => {
@@ -222,17 +222,24 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             fulfillment: {
                 shipping_method: checkoutForm.value.fulfillment.shippingOption,
             },
-            payment: {
-                gateway: 'test_gateway',
-                card: {
-                    number: checkoutForm.value.payment.cardNum,
-                    expiry_month: checkoutForm.value.payment.expMonth,
-                    expiry_year: checkoutForm.value.payment.expYear,
-                    cvc: checkoutForm.value.payment.ccv,
-                    postal_zip_code:
-                        checkoutForm.value.payment.billingPostalZipCode,
-                },
-            },
+            payment: paymentMethodPaypal.value
+                ? {
+                      gateway: 'paypal',
+                      paypal: {
+                          action: 'authorize',
+                      },
+                  }
+                : {
+                      gateway: 'test_gateway',
+                      card: {
+                          number: checkoutForm.value.payment.cardNum,
+                          expiry_month: checkoutForm.value.payment.expMonth,
+                          expiry_year: checkoutForm.value.payment.expYear,
+                          cvc: checkoutForm.value.payment.ccv,
+                          postal_zip_code:
+                              checkoutForm.value.payment.billingPostalZipCode,
+                      },
+                  },
         }
     }
     const handleConfirmOrder = async () => {

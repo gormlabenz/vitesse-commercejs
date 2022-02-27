@@ -136,7 +136,10 @@
                     />
                 </div>
             </div>
-            <div class="mt-6 flex flex-col">
+            <div
+                class="mt-6 flex flex-col"
+                v-if="commerceStore.paymentMethodCard"
+            >
                 <label for="cardNum">Credit card number</label>
                 <input
                     type="text"
