@@ -123,13 +123,18 @@ export const useCommerceStore = defineStore('commerceStore', {
                 )
             }
         },
-        async fetchShippingSubdivisions(countryCode) {
+        async fetchShippingSubdivisions() {
             try {
+                console.log(
+                    'Fetching shipping subdivisions for country:',
+                    this.checkoutForm.shipping.country
+                )
                 const shippingSubdivisions =
                     await commerce.services.localeListShippingSubdivisions(
                         this.checkoutToken,
-                        countryCode
+                        this.checkoutForm.shipping.country
                     )
+                console.log(shippingSubdivisions)
                 this.shippingSubdivisions = shippingSubdivisions.subdivisions
             } catch (error) {
                 console.log(

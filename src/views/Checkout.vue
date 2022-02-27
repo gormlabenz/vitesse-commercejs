@@ -70,7 +70,7 @@
         <select
             v-model="commerceStore.checkoutForm.shipping.country"
             name="country"
-            @select="commerceStore.validateShippingOption"
+            @change="commerceStore.fetchShippingSubdivisions()"
         >
             <option value="" disabled>Country</option>
             <option
@@ -81,7 +81,6 @@
                 {{ country }}
             </option>
         </select>
-
         <label for="stateProvince">State/province</label>
         <select
             v-model="commerceStore.checkoutForm.shipping.stateProvince"
