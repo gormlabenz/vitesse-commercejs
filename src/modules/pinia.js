@@ -14,7 +14,7 @@ export const install = async ({ isClient, initialState, app, router }) => {
     if (import.meta.env.SSR) {
         await store.init()
         // initialState.pinia = store
-        initialState.pinia = store.$state
+        initialState.pinia = { products: store.products, cart: store.cart }
         initialState.pinia.ready = false
     } else {
         if (initialState.pinia) {
@@ -26,7 +26,6 @@ export const install = async ({ isClient, initialState, app, router }) => {
         if (!store.ready) {
             store.init()
         }
-
         next()
     })
 }
