@@ -91,21 +91,22 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     }
     const generateCheckoutToken = async () => {
         try {
-            const checkoutToken = await commerce.checkout.generateToken(
+            const checkoutTokenData = await commerce.checkout.generateToken(
                 cart.value.id,
                 { type: 'cart' }
             )
-            checkoutToken.value = checkoutToken
+            checkoutToken.value = checkoutTokenData
+            console.log('checkoutToken', checkoutTokenData)
         } catch (error) {
             error.value = error
         }
     }
     const getLiveObject = async () => {
         try {
-            const liveObject = await commerce.checkout.getLive(
+            const liveObjectData = await commerce.checkout.getLive(
                 checkoutToken.value
             )
-            liveObject.value = liveObject
+            liveObject.value = liveObjectData
         } catch (error) {
             console.error(error)
             error.value = error
@@ -113,11 +114,11 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     }
     const fetchShippingCountries = async () => {
         try {
-            const countries =
+            const countriesData =
                 await commerce.services.localeListShippingCountries(
                     checkoutToken.value
                 )
-            countries.value = countries.countries
+            countries.value = countriesData.countries
         } catch (error) {
             console.log(
                 'There was an error fetching a list of countries',
@@ -131,13 +132,13 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                 'Fetching shipping subdivisions for country:',
                 checkoutForm.value.shipping.country
             )
-            const shippingSubdivisions =
+            const shippingSubdivisionsData =
                 await commerce.services.localeListShippingSubdivisions(
                     checkoutToken.value,
                     checkoutForm.value.shipping.country
                 )
             console.log(shippingSubdivisions)
-            shippingSubdivisions.value = shippingSubdivisions.subdivisions
+            shippingSubdivisions.value = shippingSubdivisionsData.subdivisions
         } catch (error) {
             console.log(
                 'There was an error fetching a list of shipping subdivisions',
@@ -147,15 +148,15 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     }
     const fetchShippingOptions = async () => {
         try {
-            const options = await commerce.checkout.getShippingOptions(
+            const optionsData = await commerce.checkout.getShippingOptions(
                 checkoutToken.value.id,
                 {
                     country: checkoutForm.value.shipping.country,
                     region: checkoutForm.value.shipping.stateProvince,
                 }
             )
-            console.log('Shipping options:', options)
-            shippingOptions.value = options
+            console.log('Shipping options:', optionsData)
+            shippingOptions.value = optionsData
         } catch (error) {
             console.log(
                 'There was an error fetching the shipping methods',
@@ -165,7 +166,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     }
     const validateShippingOption = async () => {
         try {
-            const fulfillment = await commerce.checkout.checkShippingOption(
+            const fulfillmentData = await commerce.checkout.checkShippingOption(
                 checkoutToken.value,
                 {
                     shipping_option_id:
@@ -174,9 +175,9 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                     region: checkoutForm.value.shipping.stateProvince,
                 }
             )
-            console.log('Fulfillment:', fulfillment)
-            fulfillment.value.shippingOption = fulfillment.id
-            liveObject.value = fulfillment.live
+            console.log('Fulfillment:', fulfillmentData)
+            fulfillment.value.shippingOption = fulfillmentData.id
+            liveObject.value = fulfillmentData.live
         } catch (error) {
             console.log('There was an error setting the shipping option', error)
         }
