@@ -46,6 +46,9 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const orderData = ref({})
     const order = ref({})
 
+    const paymentMethodPaypal = ref(false)
+    const paymentMethodCard = ref(false)
+
     const init = async () => {
         try {
             const productsResponse = commerce.products.list()
@@ -275,6 +278,12 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             }
         }
     })
+    watch(paymentMethodCard, () => {
+        if (paymentMethodCard.value) paymentMethodPaypal.value = false
+    })
+    watch(paymentMethodPaypal, () => {
+        if (paymentMethodPaypal.value) paymentMethodCard.value = false
+    })
     return {
         init,
         addToCart,
@@ -289,6 +298,8 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         checkout,
         confirmOrder,
         handleConfirmOrder,
+        paymentMethodCard,
+        paymentMethodPaypal,
         totalPrice,
         cart,
         products,

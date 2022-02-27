@@ -121,11 +121,19 @@
             <div class="flex items-center space-x-3">
                 <div>
                     <label for="paypal">Paypal </label>
-                    <input name="paypal" type="checkbox" />
+                    <input
+                        v-model="commerceStore.paymentMethodPaypal"
+                        name="paypal"
+                        type="checkbox"
+                    />
                 </div>
                 <div>
                     <label for="card">Credit card </label>
-                    <input name="card" type="checkbox" />
+                    <input
+                        v-model="commerceStore.paymentMethodCard"
+                        name="card"
+                        type="checkbox"
+                    />
                 </div>
             </div>
             <div class="mt-6 flex flex-col">
