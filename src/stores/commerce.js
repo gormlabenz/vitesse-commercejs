@@ -13,36 +13,33 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const products = ref([])
     const error = ref(null)
     const checkoutToken = ref(null)
-    const checkoutForm = ref({
-        customer: {
-            firstName: '',
-            lastName: '',
-            email: '',
-        },
-        shipping: {
-            name: '',
-            street: '',
-            city: '',
-            stateProvince: '',
-            postalZipCode: '',
-            country: '',
-        },
-        fulfillment: {
-            shippingOption: '',
-        },
-        payment: {
-            cardNum: '',
-            expMonth: '',
-            expYear: '',
-            ccv: '',
-            billingPostalZipCode: '',
-        },
+    const customer = ref({
+        firstName: '',
+        lastName: '',
+        email: '',
+    })
+    const shipping = ref({
+        name: '',
+        street: '',
+        city: '',
+        stateProvince: '',
+        postalZipCode: '',
+        country: '',
+    })
+    const fulfillment = ref({
+        shippingOption: '',
+    })
+    const payment = ref({
+        cardNum: '',
+        expMonth: '',
+        expYear: '',
+        ccv: '',
+        billingPostalZipCode: '',
     })
     const liveObject = ref({})
     const countries = ref([])
     const shippingSubdivisions = ref([])
     const shippingOptions = ref([])
-    const fulfillment = ref([])
 
     const paymentMethodPaypal = ref(true)
     const paymentMethodCard = ref(false)
@@ -133,12 +130,12 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         try {
             console.log(
                 'Fetching shipping subdivisions for country:',
-                checkoutForm.value.shipping.country
+                shipping.value.country
             )
             const shippingSubdivisionsData =
                 await commerce.services.localeListShippingSubdivisions(
                     checkoutToken.value,
-                    checkoutForm.value.shipping.country
+                    shipping.value.country
                 )
             console.log(shippingSubdivisions)
             shippingSubdivisions.value = shippingSubdivisionsData.subdivisions
@@ -154,8 +151,8 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             const optionsData = await commerce.checkout.getShippingOptions(
                 checkoutToken.value.id,
                 {
-                    country: checkoutForm.value.shipping.country,
-                    region: checkoutForm.value.shipping.stateProvince,
+                    country: shipping.value.country,
+                    region: shipping.value.stateProvince,
                 }
             )
             console.log('Shipping options:', optionsData)
@@ -172,21 +169,20 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             const fulfillmentData = await commerce.checkout.checkShippingOption(
                 checkoutToken.value,
                 {
-                    shipping_option_id:
-                        checkoutForm.value.fulfillment.shippingOption,
-                    country: checkoutForm.value.shipping.country,
-                    region: checkoutForm.value.shipping.stateProvince,
+                    shipping_option_id: fulfillment.value.shippingOption,
+                    country: shipping.value.country,
+                    region: shipping.value.stateProvince,
                 }
             )
             console.log('Fulfillment:', fulfillmentData)
-            fulfillment.value.shippingOption = fulfillmentData.id
+            fulfillment.valueOption = fulfillmentData.id
             liveObject.value = fulfillmentData.live
         } catch (error) {
             console.log('There was an error setting the shipping option', error)
         }
     }
     const validateCheckoutForm = async () => {
-        console.log('validateCheckoutForm', Object.values(checkoutForm.value))
+        console.log('validateCheckoutForm', Object.values(shipping.value))
     }
     const captureOrder = async () => {
         try {
@@ -255,22 +251,20 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             ? {
                   line_items: checkoutToken.value.live.line_items,
                   customer: {
-                      firstname: checkoutForm.value.customer.firstName,
-                      lastname: checkoutForm.value.customer.lastName,
-                      email: checkoutForm.value.customer.email,
+                      firstname: customer.value.firstName,
+                      lastname: customer.value.lastName,
+                      email: customer.value.email,
                   },
                   shipping: {
-                      name: checkoutForm.value.shipping.name,
-                      street: checkoutForm.value.shipping.street,
-                      town_city: checkoutForm.value.shipping.city,
-                      county_state: checkoutForm.value.shipping.stateProvince,
-                      postal_zip_code:
-                          checkoutForm.value.shipping.postalZipCode,
-                      country: checkoutForm.value.shipping.country,
+                      name: shipping.value.name,
+                      street: shipping.value.street,
+                      town_city: shipping.value.city,
+                      county_state: shipping.value.stateProvince,
+                      postal_zip_code: shipping.value.postalZipCode,
+                      country: shipping.value.country,
                   },
                   fulfillment: {
-                      shipping_method:
-                          checkoutForm.value.fulfillment.shippingOption,
+                      shipping_method: fulfillment.value.shippingOption,
                   },
                   payment: paymentData.value,
               }
@@ -298,12 +292,11 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             return {
                 gateway: 'test_gateway',
                 card: {
-                    number: checkoutForm.value.payment.cardNum,
-                    expiry_month: checkoutForm.value.payment.expMonth,
-                    expiry_year: checkoutForm.value.payment.expYear,
-                    cvc: checkoutForm.value.payment.ccv,
-                    postal_zip_code:
-                        checkoutForm.value.payment.billingPostalZipCode,
+                    number: payment.value.cardNum,
+                    expiry_month: payment.value.expMonth,
+                    expiry_year: payment.value.expYear,
+                    cvc: payment.value.ccv,
+                    postal_zip_code: payment.value.billingPostalZipCode,
                 },
             }
         }
@@ -318,14 +311,14 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             //getPaypalPaymentId()
         }
     })
-    watch([checkoutToken, checkoutForm], () => {
+    watch([checkoutToken, shipping], () => {
         if (checkoutToken.value) {
-            if (checkoutForm.value.shipping.country) {
+            if (shipping.value.country) {
                 fetchShippingSubdivisions()
             }
             if (
-                checkoutForm.value.shipping.country !== '' &&
-                checkoutForm.value.shipping.stateProvince !== ''
+                shipping.value.country !== '' &&
+                shipping.value.stateProvince !== ''
             ) {
                 fetchShippingOptions()
             }
@@ -350,6 +343,10 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         validateShippingOption,
         validateCheckoutForm,
         captureOrder,
+        customer,
+        shipping,
+        fulfillment,
+        payment,
         paymentMethodCard,
         paymentMethodPaypal,
         totalPrice,
@@ -358,12 +355,10 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         ready,
         error,
         checkoutToken,
-        checkoutForm,
         liveObject,
         countries,
         shippingSubdivisions,
         shippingOptions,
-        fulfillment,
         orderData,
     }
 })

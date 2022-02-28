@@ -25,7 +25,7 @@
                 <label for="firstName">First name</label>
                 <input
                     type="text"
-                    v-model="commerceStore.checkoutForm.customer.firstName"
+                    v-model="commerceStore.customer.firstName"
                     name="firstName"
                     placeholder="Enter your first name"
                     required
@@ -34,7 +34,7 @@
                 <label for="lastName">Last name</label>
                 <input
                     type="text"
-                    v-model="commerceStore.checkoutForm.customer.lastName"
+                    v-model="commerceStore.customer.lastName"
                     name="lastName"
                     placeholder="Enter your last name"
                     required
@@ -43,7 +43,7 @@
                 <label for="email">Email</label>
                 <input
                     type="email"
-                    v-model="commerceStore.checkoutForm.customer.email"
+                    v-model="commerceStore.customer.email"
                     name="email"
                     placeholder="Enter your email"
                     required
@@ -53,7 +53,7 @@
                 <label for="fullname">Full name</label>
                 <input
                     type="text"
-                    v-model="commerceStore.checkoutForm.shipping.name"
+                    v-model="commerceStore.shipping.name"
                     name="name"
                     placeholder="Enter your shipping full name"
                     required
@@ -62,7 +62,7 @@
                 <label for="street">Street address</label>
                 <input
                     type="text"
-                    v-model="commerceStore.checkoutForm.shipping.street"
+                    v-model="commerceStore.shipping.street"
                     name="street"
                     placeholder="Enter your street address"
                     required
@@ -71,7 +71,7 @@
                 <label for="city">City</label>
                 <input
                     type="text"
-                    v-model="commerceStore.checkoutForm.shipping.city"
+                    v-model="commerceStore.shipping.city"
                     name="city"
                     placeholder="Enter your city"
                     required
@@ -80,14 +80,14 @@
                 <label for="postalZipCode">Postal/Zip code</label>
                 <input
                     type="number"
-                    v-model="commerceStore.checkoutForm.shipping.postalZipCode"
+                    v-model="commerceStore.shipping.postalZipCode"
                     name="postalZipCode"
                     placeholder="Enter your postal/zip code"
                     required
                 />
                 <label for="country">Country</label>
                 <select
-                    v-model="commerceStore.checkoutForm.shipping.country"
+                    v-model="commerceStore.shipping.country"
                     name="country"
                     @change="commerceStore.fetchShippingSubdivisions()"
                 >
@@ -102,7 +102,7 @@
                 </select>
                 <label for="stateProvince">State/province</label>
                 <select
-                    v-model="commerceStore.checkoutForm.shipping.stateProvince"
+                    v-model="commerceStore.shipping.stateProvince"
                     name="stateProvince"
                     @change="commerceStore.fetchShippingOptions()"
                 >
@@ -119,9 +119,7 @@
                 </select>
                 <label for="shippingOption">Shipping method</label>
                 <select
-                    v-model="
-                        commerceStore.checkoutForm.fulfillment.shippingOption
-                    "
+                    v-model="commerceStore.fulfillment.shippingOption"
                     name="shippingOption"
                     @change="commerceStore.validateShippingOption()"
                 >
@@ -170,7 +168,7 @@
                         required
                         type="number"
                         name="cardNum"
-                        v-model="commerceStore.checkoutForm.payment.cardNum"
+                        v-model="commerceStore.payment.cardNum"
                         placeholder="Enter your card number"
                     />
                     <label for="expMonth">Expiry month</label>
@@ -178,7 +176,7 @@
                         required
                         type="number"
                         name="expMonth"
-                        v-model="commerceStore.checkoutForm.payment.expMonth"
+                        v-model="commerceStore.payment.expMonth"
                         placeholder="Card expiry month"
                     />
                     <label for="expYear">Expiry year</label>
@@ -186,7 +184,7 @@
                         required
                         type="number"
                         name="expYear"
-                        v-model="commerceStore.checkoutForm.payment.expYear"
+                        v-model="commerceStore.payment.expYear"
                         placeholder="Card expiry year"
                     />
                     <label for="ccv">CCV</label>
@@ -194,7 +192,7 @@
                         required
                         type="number"
                         name="ccv"
-                        v-model="commerceStore.checkoutForm.payment.ccv"
+                        v-model="commerceStore.payment.ccv"
                         placeholder="CCV (3 digits)"
                     />
                 </div>
