@@ -14,7 +14,8 @@ useHead({
 </script>
 
 <template>
-    <Cart></Cart>
-    <CheckoutButton></CheckoutButton>
-    <router-view />
+    <Navbar></Navbar>
+    <div class="container mx-auto">
+        <router-view />
+    </div>
 </template>

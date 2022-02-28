@@ -2,22 +2,22 @@
     <div class="flex space-x-12">
         <div class="flex flex-col items-start">
             <button
-                :class="{ 'fot-bold text-2xl': stage == 0 }"
+                :class="{ 'text-2xl font-bold': stage == 0 }"
                 @click="stage = 0"
             >
-                Customer information
+                1. Customer information
             </button>
             <button
-                :class="{ 'fot-bold text-2xl': stage == 1 }"
+                :class="{ 'text-2xl font-bold': stage == 1 }"
                 @click="stage = 1"
             >
-                Shipping details
+                2. Shipping details
             </button>
             <button
-                :class="{ 'fot-bold text-2xl': stage == 2 }"
+                :class="{ 'text-2xl font-bold': stage == 2 }"
                 @click="stage = 2"
             >
-                Payment information
+                3. Payment information
             </button>
         </div>
         <form>
