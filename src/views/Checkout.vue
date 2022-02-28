@@ -2,19 +2,22 @@
     <div class="flex space-x-12">
         <div class="flex flex-col items-start">
             <button
-                :class="{ 'text-2xl font-bold': stage == 0 }"
+                :class="{ 'text-2xl font-bold text-gray-900': stage == 0 }"
+                class="text-gray-500 hover:text-gray-900"
                 @click="stage = 0"
             >
                 1. Customer information
             </button>
             <button
-                :class="{ 'text-2xl font-bold': stage == 1 }"
+                :class="{ 'text-2xl font-bold text-gray-900': stage == 1 }"
+                class="text-gray-500 hover:text-gray-900"
                 @click="stage = 1"
             >
                 2. Shipping details
             </button>
             <button
-                :class="{ 'text-2xl font-bold': stage == 2 }"
+                :class="{ 'text-2xl font-bold text-gray-900': stage == 2 }"
+                class="text-gray-500 hover:text-gray-900"
                 @click="stage = 2"
             >
                 3. Payment information
