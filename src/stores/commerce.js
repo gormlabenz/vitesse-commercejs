@@ -188,7 +188,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const validateCheckoutForm = async () => {
         console.log('validateCheckoutForm', Object.values(checkoutForm.value))
     }
-
     const captureOrder = async () => {
         try {
             const order = await commerce.checkout.capture(
