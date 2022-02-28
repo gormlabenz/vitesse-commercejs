@@ -9,6 +9,7 @@
                 name="firstName"
                 placeholder="Enter your first name"
                 required
+                minlength="2"
             />
             <label for="lastName">Last name</label>
             <input
@@ -17,10 +18,11 @@
                 name="lastName"
                 placeholder="Enter your last name"
                 required
+                minlength="2"
             />
             <label for="email">Email</label>
             <input
-                type="text"
+                type="email"
                 v-model="commerceStore.checkoutForm.customer.email"
                 name="email"
                 placeholder="Enter your email"
@@ -37,6 +39,7 @@
                 name="name"
                 placeholder="Enter your shipping full name"
                 required
+                minlength="2"
             />
 
             <label for="street">Street address</label>
@@ -46,6 +49,7 @@
                 name="street"
                 placeholder="Enter your street address"
                 required
+                minlength="2"
             />
 
             <label for="city">City</label>
@@ -55,11 +59,12 @@
                 name="city"
                 placeholder="Enter your city"
                 required
+                minlength="2"
             />
 
             <label for="postalZipCode">Postal/Zip code</label>
             <input
-                type="text"
+                type="number"
                 v-model="commerceStore.checkoutForm.shipping.postalZipCode"
                 name="postalZipCode"
                 placeholder="Enter your postal/zip code"
@@ -146,28 +151,32 @@
             >
                 <label for="cardNum">Credit card number</label>
                 <input
-                    type="text"
+                    required
+                    type="number"
                     name="cardNum"
                     v-model="commerceStore.checkoutForm.payment.cardNum"
                     placeholder="Enter your card number"
                 />
                 <label for="expMonth">Expiry month</label>
                 <input
-                    type="text"
+                    required
+                    type="number"
                     name="expMonth"
                     v-model="commerceStore.checkoutForm.payment.expMonth"
                     placeholder="Card expiry month"
                 />
                 <label for="expYear">Expiry year</label>
                 <input
-                    type="text"
+                    required
+                    type="number"
                     name="expYear"
                     v-model="commerceStore.checkoutForm.payment.expYear"
                     placeholder="Card expiry year"
                 />
                 <label for="ccv">CCV</label>
                 <input
-                    type="text"
+                    required
+                    type="number"
                     name="ccv"
                     v-model="commerceStore.checkoutForm.payment.ccv"
                     placeholder="CCV (3 digits)"
