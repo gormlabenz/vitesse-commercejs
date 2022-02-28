@@ -23,8 +23,12 @@
                 3. Payment information
             </button>
         </div>
-        <form>
-            <div class="flex flex-col" v-if="stage == 0">
+        <div>
+            <form
+                ref="customerInformation"
+                class="flex flex-col"
+                v-if="stage == 0"
+            >
                 <label for="firstName">First name</label>
                 <input
                     type="text"
@@ -51,8 +55,14 @@
                     placeholder="Enter your email"
                     required
                 />
-            </div>
-            <div class="flex flex-col" v-if="stage == 1">
+                <button
+                    class="mt-4"
+                    @click.prevent="validate(customerInformation)"
+                >
+                    Next
+                </button>
+            </form>
+            <form ref="shippingDetails" class="flex flex-col" v-if="stage == 1">
                 <label for="fullname">Full name</label>
                 <input
                     type="text"
@@ -138,8 +148,12 @@
                         }}
                     </option>
                 </select>
-            </div>
-            <div class="flex flex-col" v-if="stage == 2">
+            </form>
+            <form
+                ref="paymentInformation"
+                class="flex flex-col"
+                v-if="stage == 2"
+            >
                 <div class="flex items-center space-x-3">
                     <div>
                         <label for="paypal">Paypal </label>
@@ -199,8 +213,8 @@
                         placeholder="CCV (3 digits)"
                     />
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     <button
         class="bg-orange-300 px-4 py-2"
@@ -221,6 +235,23 @@ import { useCommerceStore } from '../stores/commerce'
 const commerceStore = useCommerceStore()
 
 const stage = ref(0)
+
+const customerInformation = ref(null)
+const shippingDetails = ref(null)
+const paymentInformation = ref(null)
+
+const validate = (form) => {
+    console.log(form, form.checkValidity())
+
+    if (form.checkValidity()) {
+        stage.value++
+    } else {
+        const inputs = form.querySelectorAll('input')
+        inputs.forEach((input) => {
+            input.classList.add('invalid:border-red-500', 'invalid:border-2')
+        })
+    }
+}
 </script>
 <style scoped>
 h4 {
