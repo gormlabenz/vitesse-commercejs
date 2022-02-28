@@ -27,7 +27,7 @@
             <form
                 ref="customerInformation"
                 class="flex flex-col"
-                v-if="stage == 0"
+                v-show="stage == 0"
             >
                 <label for="firstName">First name</label>
                 <input
@@ -62,7 +62,11 @@
                     Next
                 </button>
             </form>
-            <form ref="shippingDetails" class="flex flex-col" v-if="stage == 1">
+            <form
+                ref="shippingDetails"
+                class="flex flex-col"
+                v-show="stage == 1"
+            >
                 <label for="fullname">Full name</label>
                 <input
                     type="text"
@@ -148,11 +152,14 @@
                         }}
                     </option>
                 </select>
+                <button class="mt-4" @click.prevent="validate(shippingDetails)">
+                    Next
+                </button>
             </form>
             <form
                 ref="paymentInformation"
                 class="flex flex-col"
-                v-if="stage == 2"
+                v-show="stage == 2"
             >
                 <div class="flex items-center space-x-3">
                     <div>
@@ -211,8 +218,16 @@
                         name="ccv"
                         v-model="commerceStore.payment.ccv"
                         placeholder="CCV (3 digits)"
+                        minlength="3"
+                        maxlength="4"
                     />
                 </div>
+                <button
+                    class="mt-4"
+                    @click.prevent="validate(paymentInformation)"
+                >
+                    Next
+                </button>
             </form>
         </div>
     </div>
@@ -241,10 +256,9 @@ const shippingDetails = ref(null)
 const paymentInformation = ref(null)
 
 const validate = (form) => {
-    console.log(form, form.checkValidity())
-
     if (form.checkValidity()) {
-        stage.value++
+        if (stage.value < 2) stage.value++
+        else if (stage.value == 3) commerceStore.captureOrder()
     } else {
         const inputs = form.querySelectorAll('input')
         inputs.forEach((input) => {
