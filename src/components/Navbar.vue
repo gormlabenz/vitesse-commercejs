@@ -1,7 +1,7 @@
 <template>
     <!-- a navbar component made with tailwind -->
-    <nav>
-        <div class="container mx-auto flex h-16 items-center justify-between">
+    <nav class="shadow-md">
+        <div class="container mx-auto flex h-12 items-center justify-between">
             <div class="flex items-center">
                 <div class="flex items-center">
                     <router-link to="/" class="flex items-center">

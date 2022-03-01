@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto mt-5">
+    <div class="mx-auto my-8">
         <Products />
     </div>
 </template>
