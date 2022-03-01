@@ -103,11 +103,7 @@
                     required
                 />
                 <label for="country">Country</label>
-                <select
-                    v-model="commerceStore.shipping.country"
-                    name="country"
-                    @change="commerceStore.fetchShippingSubdivisions()"
-                >
+                <select v-model="commerceStore.shipping.country" name="country">
                     <option value="" disabled>Country</option>
                     <option
                         v-for="(country, index) in commerceStore.countries"
@@ -115,23 +111,6 @@
                         :key="index"
                     >
                         {{ country }}
-                    </option>
-                </select>
-                <label for="stateProvince">State/province</label>
-                <select
-                    v-model="commerceStore.shipping.stateProvince"
-                    name="stateProvince"
-                    @change="commerceStore.fetchShippingOptions()"
-                >
-                    <option value="" disabled>State/province</option>
-                    <option
-                        v-for="(
-                            subdivision, index
-                        ) in commerceStore.shippingSubdivisions"
-                        :value="index"
-                        :key="index"
-                    >
-                        {{ subdivision }}
                     </option>
                 </select>
                 <label for="shippingOption">Shipping method</label>

@@ -22,7 +22,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         name: '',
         street: '',
         city: '',
-        stateProvince: '',
         postalZipCode: '',
         country: '',
     })
@@ -152,7 +151,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                 checkoutToken.value.id,
                 {
                     country: shipping.value.country,
-                    region: shipping.value.stateProvince,
                 }
             )
             console.log('Shipping options:', optionsData)
@@ -171,7 +169,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                 {
                     shipping_option_id: fulfillment.value.shippingOption,
                     country: shipping.value.country,
-                    region: shipping.value.stateProvince,
                 }
             )
             console.log('Fulfillment:', fulfillmentData)
@@ -274,7 +271,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                       name: shipping.value.name,
                       street: shipping.value.street,
                       town_city: shipping.value.city,
-                      county_state: shipping.value.stateProvince,
                       postal_zip_code: shipping.value.postalZipCode,
                       country: shipping.value.country,
                   },
@@ -327,16 +323,13 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         }
     })
     watch([checkoutToken, shipping], () => {
-        if (checkoutToken.value) {
-            if (shipping.value.country) {
-                fetchShippingSubdivisions()
-            }
-            if (
-                shipping.value.country !== '' &&
-                shipping.value.stateProvince !== ''
-            ) {
-                fetchShippingOptions()
-            }
+        console.log(
+            'checkoutToken, shipping',
+            isRef(checkoutToken),
+            isRef(shipping)
+        )
+        if (checkoutToken.value && shipping.value.country) {
+            fetchShippingOptions()
         }
     })
     watch(paymentMethodCard, () => {
