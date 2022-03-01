@@ -82,7 +82,7 @@
                 </form>
                 <button
                     class="mt-4 whitespace-nowrap"
-                    @click.prevent="validate(summary)"
+                    @click.prevent="commerceStore.validateForm(summary)"
                 >
                     Pay €{{ parseFloat(commerceStore.totalPrice) }}
                     with credit card

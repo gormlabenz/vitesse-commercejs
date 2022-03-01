@@ -38,11 +38,9 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     })
     const liveObject = ref({})
     const countries = ref([])
+
     const shippingSubdivisions = ref([])
     const shippingOptions = ref([])
-
-    const paymentMethodPaypal = ref(true)
-    const paymentMethodCard = ref(false)
 
     const paypalAuth = ref({})
 
@@ -179,19 +177,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             console.log('There was an error setting the shipping option', error)
         }
     }
-    const captureOrder = async () => {
-        try {
-            const order = await commerce.checkout.capture(
-                checkoutToken.value.id,
-                orderDetails.value
-            )
-            order.value = order
-            useRouter().push('/confirmation')
-            console.log('Order captured', order)
-        } catch (error) {
-            console.log('There was an error confirming your order', error)
-        }
-    }
     const getPaypalPaymentId = async () => {
         try {
             // Use a checkout token ID that was generated earlier, and any order details that may have been collected
@@ -236,7 +221,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                 onAuthorize: function (data, actions) {
                     console.log('onAuthorize', data, actions)
                     // Handler if customer DOES authorize payment (this is where you get the payment_id & payer_id you need to pass to Chec)
-                    captureOrder(data)
+                    capturePaypalOrder()
                 },
                 onCancel: function (data, actions) {
                     // Handler if customer does not authorize payment
@@ -246,6 +231,65 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             '#paypal-button-container'
         )
     }
+    const capturePaypalOrder = async () => {
+        try {
+            const orderDetailsData = {
+                ...orderDetails.value,
+                payment: {
+                    gateway: 'paypal',
+                    paypal: {
+                        action: 'capture',
+                        payment_id: paypalAuth.value.payment_id,
+                        payer_id: paypalAuth.value.payer_id,
+                    },
+                },
+            }
+            const order = await commerce.checkout.capture(
+                checkoutToken.value.id,
+                orderDetailsData
+            )
+            useRouter().push('/confirmation')
+            console.log('Order captured', order)
+        } catch (response) {
+            // There was an issue with capturing the order with Commerce.js
+            console.log(response)
+            alert(response.message)
+            return
+        } finally {
+            // Any loading state can be removed here.
+        }
+    }
+    const captureCardOrder = async () => {
+        try {
+            const orderDetailsData = {
+                ...orderDetails.value,
+                payment: {
+                    gateway: 'test_gateway',
+                    card: {
+                        number: payment.value.cardNum,
+                        expiry_month: payment.value.expMonth,
+                        expiry_year: payment.value.expYear,
+                        cvc: payment.value.ccv,
+                        postal_zip_code: payment.value.billingPostalZipCode,
+                    },
+                },
+            }
+            const order = await commerce.checkout.capture(
+                checkoutToken.value.id,
+                orderDetailsData
+            )
+            useRouter().push('/confirmation')
+            console.log('Order captured', order)
+        } catch (response) {
+            // There was an issue with capturing the order with Commerce.js
+            console.log(response)
+            alert(response.message)
+            return
+        } finally {
+            // Any loading state can be removed here.
+        }
+    }
+
     const totalPrice = computed(() =>
         ready.value
             ? cart.value.line_items.reduce((acc, item) => {
@@ -257,60 +301,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         ready.value ? cart.value.total_items : 0
     )
     const lineItems = computed(() => (ready.value ? cart.value.line_items : []))
-    const orderDetails = computed(() =>
-        checkoutToken.value
-            ? {
-                  line_items: checkoutToken.value.live.line_items,
-                  customer: {
-                      firstname: customer.value.firstName,
-                      lastname: customer.value.lastName,
-                      email: customer.value.email,
-                  },
-                  shipping: {
-                      name: shipping.value.name,
-                      street: shipping.value.street,
-                      town_city: shipping.value.city,
-                      postal_zip_code: shipping.value.postalZipCode,
-                      country: shipping.value.country,
-                  },
-                  fulfillment: {
-                      shipping_method: fulfillment.value.shippingOption,
-                  },
-                  payment: paymentData.value,
-              }
-            : {}
-    )
-    const paymentData = computed(() => {
-        if (paymentMethodPaypal.value) {
-            if (paypalAuth.value) {
-                return {
-                    gateway: 'paypal',
-                    paypal: {
-                        action: 'capture',
-                        payment_id: paypalAuth.value.payment_id,
-                        payer_id: paypalAuth.value.payer_id,
-                    },
-                }
-            }
-            return {
-                gateway: 'paypal',
-                paypal: {
-                    action: 'authorize',
-                },
-            }
-        } else if (paymentMethodCard.value) {
-            return {
-                gateway: 'test_gateway',
-                card: {
-                    number: payment.value.cardNum,
-                    expiry_month: payment.value.expMonth,
-                    expiry_year: payment.value.expYear,
-                    cvc: payment.value.ccv,
-                    postal_zip_code: payment.value.billingPostalZipCode,
-                },
-            }
-        }
-    })
+
     const validateForm = (form) => {
         if (form.checkValidity()) {
             if (stage.value == 0) {
@@ -319,7 +310,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                 stage.value++
                 getPaypalPaymentId()
             } else if (stage.value == 2) {
-                captureOrder()
+                captureCardOrder()
             }
         } else {
             const inputs = form.querySelectorAll('input')
@@ -340,6 +331,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     watch(
         () => ({ ...checkoutToken.value }),
         () => {
+            console.log('checkoutToken', checkoutToken.value)
             if (checkoutToken.value) {
                 getLiveObject()
                 fetchShippingCountries()
@@ -360,12 +352,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             }
         }
     )
-    watch(paymentMethodCard, () => {
-        if (paymentMethodCard.value) paymentMethodPaypal.value = false
-    })
-    watch(paymentMethodPaypal, () => {
-        if (paymentMethodPaypal.value) paymentMethodCard.value = false
-    })
+
     return {
         init,
         addToCart,
@@ -378,15 +365,13 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         fetchShippingOptions,
         getPaypalPaymentId,
         validateShippingOption,
-        captureOrder,
+        captureCardOrder,
         validateForm,
         stage,
         customer,
         shipping,
         fulfillment,
         payment,
-        paymentMethodCard,
-        paymentMethodPaypal,
         totalPrice,
         totalItems,
         lineItems,
@@ -399,7 +384,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         countries,
         shippingSubdivisions,
         shippingOptions,
-        orderDetails,
     }
 })
 
