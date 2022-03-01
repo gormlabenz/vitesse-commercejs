@@ -1,35 +1,37 @@
 <template>
-    <div class="my-8">
-        <div class="flex space-x-12">
-            <div class="flex flex-col items-start">
-                <button
-                    :class="{ 'text-2xl font-bold text-gray-900': stage == 0 }"
-                    class="text-gray-500 hover:text-gray-900"
-                    @click="stage = 0"
-                >
-                    1. Customer information
-                </button>
-                <button
-                    :class="{ 'text-2xl font-bold text-gray-900': stage == 1 }"
-                    class="text-gray-500 hover:text-gray-900"
-                    @click="stage = 1"
-                >
-                    2. Shipping details
-                </button>
-                <button
-                    :class="{ 'text-2xl font-bold text-gray-900': stage == 2 }"
-                    class="text-gray-500 hover:text-gray-900"
-                    @click="stage = 2"
-                >
-                    3. Payment information
-                </button>
-            </div>
+    <div class="relative my-8 max-w-md space-y-8 rounded-md p-4 shadow-md">
+        <div>
+            <h3
+                :class="
+                    stage == 0
+                        ? 'text-2xl font-bold text-gray-900'
+                        : 'text-gray-500'
+                "
+            >
+                1. Customer information
+            </h3>
+            <h3
+                :class="
+                    stage == 1
+                        ? 'text-2xl font-bold text-gray-900'
+                        : 'text-gray-500'
+                "
+            >
+                2. Shipping details
+            </h3>
+            <h3
+                :class="
+                    stage == 2
+                        ? 'text-2xl font-bold text-gray-900'
+                        : 'text-gray-500'
+                "
+            >
+                3. Payment information
+            </h3>
+        </div>
+        <div>
             <div>
-                <form
-                    ref="customerInformation"
-                    class="flex flex-col"
-                    v-show="stage == 0"
-                >
+                <form ref="customerInformation" v-show="stage == 0">
                     <label for="firstName">First name</label>
                     <input
                         type="text"
@@ -63,11 +65,7 @@
                         Next
                     </button>
                 </form>
-                <form
-                    ref="shippingDetails"
-                    class="flex flex-col"
-                    v-show="stage == 1"
-                >
+                <form ref="shippingDetails" v-show="stage == 1">
                     <label for="fullname">Full name</label>
                     <input
                         type="text"
@@ -146,11 +144,7 @@
                         Next
                     </button>
                 </form>
-                <form
-                    ref="paymentInformation"
-                    class="flex flex-col"
-                    v-show="stage == 2"
-                >
+                <form ref="paymentInformation" v-show="stage == 2">
                     <div class="flex items-center space-x-3">
                         <div>
                             <label for="paypal">Paypal </label>
@@ -252,8 +246,14 @@ const validate = (form) => {
     }
 }
 </script>
+
 <style scoped>
-h4 {
-    @apply text-2xl font-bold;
+input {
+    @apply mb-4 block w-full rounded-md border border-gray-200 p-2;
+}
+button {
+    margin-left: 100%;
+    @apply -translate-x-full rounded-md bg-blue-500 py-2 px-4 font-bold
+        text-white;
 }
 </style>
