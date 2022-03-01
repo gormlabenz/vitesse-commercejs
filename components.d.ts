@@ -7,11 +7,14 @@ declare module 'vue' {
     Cart: typeof import('./src/components/Cart.vue')['default']
     CartComponent: typeof import('./src/components/CartComponent.vue')['default']
     CheckoutButton: typeof import('./src/components/CheckoutButton.vue')['default']
+    CustomerInformation: typeof import('./src/components/CustomerInformation.vue')['default']
     IconAccountBox: typeof import('~icons/ic/on-account-box')['default']
     IconMdiDelete: typeof import('~icons/ic/on-mdi-delete')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
     Product: typeof import('./src/components/Product.vue')['default']
     Products: typeof import('./src/components/Products.vue')['default']
+    ShippingDetails: typeof import('./src/components/ShippingDetails.vue')['default']
+    Summary: typeof import('./src/components/Summary.vue')['default']
   }
 }
 

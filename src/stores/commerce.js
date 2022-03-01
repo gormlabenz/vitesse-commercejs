@@ -13,6 +13,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
     const products = ref([])
     const error = ref(null)
     const checkoutToken = ref(null)
+    const stage = ref(0)
     const customer = ref({
         firstName: '',
         lastName: '',
@@ -310,6 +311,26 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             }
         }
     })
+    const validateForm = (form) => {
+        if (form.checkValidity()) {
+            if (stage.value == 0) {
+                stage.value++
+            } else if (stage.value == 1) {
+                stage.value++
+                getPaypalPaymentId()
+            } else if (stage.value == 2) {
+                captureOrder()
+            }
+        } else {
+            const inputs = form.querySelectorAll('input')
+            inputs.forEach((input) => {
+                input.classList.add(
+                    'invalid:border-red-500',
+                    'invalid:border-2'
+                )
+            })
+        }
+    }
     watch(cart, () => {
         if (cart.value.line_items.length > 0) generateCheckoutToken()
     })
@@ -349,6 +370,8 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         getPaypalPaymentId,
         validateShippingOption,
         captureOrder,
+        validateForm,
+        stage,
         customer,
         shipping,
         fulfillment,
