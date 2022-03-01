@@ -178,9 +178,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             console.log('There was an error setting the shipping option', error)
         }
     }
-    const validateCheckoutForm = async () => {
-        console.log('validateCheckoutForm', Object.values(shipping.value))
-    }
     const captureOrder = async () => {
         try {
             const order = await commerce.checkout.capture(
@@ -350,7 +347,6 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         fetchShippingOptions,
         getPaypalPaymentId,
         validateShippingOption,
-        validateCheckoutForm,
         captureOrder,
         customer,
         shipping,
