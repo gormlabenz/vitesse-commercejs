@@ -147,72 +147,102 @@
                             Next
                         </button>
                     </form>
-                    <form ref="summary" v-show="stage == 2">
-                        <div class="flex items-center space-x-3">
-                            <div>
-                                <label for="paypal">Paypal </label>
-                                <input
-                                    v-model="commerceStore.paymentMethodPaypal"
-                                    name="paypal"
-                                    type="checkbox"
-                                />
-                            </div>
-                            <div>
-                                <label for="card">Credit card </label>
-                                <input
-                                    v-model="commerceStore.paymentMethodCard"
-                                    name="card"
-                                    type="checkbox"
-                                />
+                    <div ref="summary" v-show="stage == 2">
+                        <div>
+                            <!-- Customer data -->
+                            <div
+                                class="flex flex-col justify-between space-y-4"
+                            >
+                                <div>
+                                    <h3 class="font-bold text-gray-500">
+                                        Customer
+                                    </h3>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.customer.firstName }}
+                                        {{ commerceStore.customer.lastName }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.customer.email }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-500">
+                                        Shipping
+                                    </h3>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.shipping.name }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.shipping.street }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.shipping.city }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{
+                                            commerceStore.shipping.postalZipCode
+                                        }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{ commerceStore.shipping.country }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div
-                            v-show="commerceStore.paymentMethodPaypal"
-                            id="paypal-button-container"
-                        ></div>
-                        <div
-                            class="mt-6 flex flex-col"
-                            v-show="commerceStore.paymentMethodCard"
-                        >
-                            <label for="cardNum">Credit card number</label>
-                            <input
-                                required
-                                type="number"
-                                name="cardNum"
-                                v-model="commerceStore.payment.cardNum"
-                                placeholder="Enter your card number"
-                            />
-                            <label for="expMonth">Expiry month</label>
-                            <input
-                                required
-                                type="number"
-                                name="expMonth"
-                                v-model="commerceStore.payment.expMonth"
-                                placeholder="Card expiry month"
-                            />
-                            <label for="expYear">Expiry year</label>
-                            <input
-                                required
-                                type="number"
-                                name="expYear"
-                                v-model="commerceStore.payment.expYear"
-                                placeholder="Card expiry year"
-                            />
-                            <label for="ccv">CCV</label>
-                            <input
-                                required
-                                type="number"
-                                name="ccv"
-                                v-model="commerceStore.payment.ccv"
-                                placeholder="CCV (3 digits)"
-                                minlength="3"
-                                maxlength="4"
-                            />
+                        <div class="mt-4">
+                            <div>
+                                <h4 class="text-xl font-bold">Paypal</h4>
+                                <div id="paypal-button-container"></div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Credit Card</h4>
+                                <form class="mt-6 flex flex-col">
+                                    <label for="cardNum"
+                                        >Credit card number</label
+                                    >
+                                    <input
+                                        required
+                                        type="number"
+                                        name="cardNum"
+                                        v-model="commerceStore.payment.cardNum"
+                                        placeholder="Enter your card number"
+                                    />
+                                    <label for="expMonth">Expiry month</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        name="expMonth"
+                                        v-model="commerceStore.payment.expMonth"
+                                        placeholder="Card expiry month"
+                                    />
+                                    <label for="expYear">Expiry year</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        name="expYear"
+                                        v-model="commerceStore.payment.expYear"
+                                        placeholder="Card expiry year"
+                                    />
+                                    <label for="ccv">CCV</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        name="ccv"
+                                        v-model="commerceStore.payment.ccv"
+                                        placeholder="CCV (3 digits)"
+                                        minlength="3"
+                                        maxlength="4"
+                                    />
+                                </form>
+                                <button
+                                    class="mt-4"
+                                    @click.prevent="validate(summary)"
+                                >
+                                    Buy
+                                </button>
+                            </div>
                         </div>
-                        <button class="mt-4" @click.prevent="validate(summary)">
-                            Next
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
