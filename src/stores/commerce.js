@@ -331,26 +331,35 @@ export const useCommerceStore = defineStore('commerceStore', () => {
             })
         }
     }
-    watch(cart, () => {
-        if (cart.value.line_items.length > 0) generateCheckoutToken()
-    })
-    watch(checkoutToken, () => {
-        if (checkoutToken.value) {
-            getLiveObject()
-            fetchShippingCountries()
-            //getPaypalPaymentId()
+    watch(
+        () => ({ ...cart.value }),
+        () => {
+            if (cart.value.line_items.length > 0) generateCheckoutToken()
         }
-    })
-    watch([checkoutToken, shipping], () => {
-        console.log(
-            'checkoutToken, shipping',
-            isRef(checkoutToken),
-            isRef(shipping)
-        )
-        if (checkoutToken.value && shipping.value.country) {
-            fetchShippingOptions()
+    )
+    watch(
+        () => ({ ...checkoutToken.value }),
+        () => {
+            if (checkoutToken.value) {
+                getLiveObject()
+                fetchShippingCountries()
+                //getPaypalPaymentId()
+            }
         }
-    })
+    )
+    watch(
+        () => ({ ...shipping.value }),
+        () => {
+            console.log(
+                'checkoutToken, shipping',
+                isRef(checkoutToken),
+                isRef(shipping)
+            )
+            if (checkoutToken.value && shipping.value.country) {
+                fetchShippingOptions()
+            }
+        }
+    )
     watch(paymentMethodCard, () => {
         if (paymentMethodCard.value) paymentMethodPaypal.value = false
     })

@@ -37,9 +37,11 @@
             <div>
                 <h4 class="text-xl font-bold">Paypal</h4>
                 <p class="text-gray-500">Pay with paypal</p>
-                <div id="paypal-button-container"></div>
+                <div class="my-4 flex w-full justify-center">
+                    <div id="paypal-button-container"></div>
+                </div>
             </div>
-            <div>
+            <div class="mt-16">
                 <h4 class="text-xl font-bold">Credit Card</h4>
                 <p class="text-gray-500">Pay with credit card</p>
                 <form class="mt-6 flex flex-col">
