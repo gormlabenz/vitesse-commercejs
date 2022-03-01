@@ -6,7 +6,7 @@
         <div class="mt-3 divide-y-2 divide-slate-400">
             <div
                 class="flex justify-between space-y-2"
-                v-for="item in lineItems"
+                v-for="item in commerceStore.lineItems"
                 :key="item"
             >
                 <div class="flex items-center space-x-3">
@@ -42,8 +42,4 @@
 import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
-
-const lineItems = computed(() =>
-    commerceStore.ready ? commerceStore.cart.line_items : []
-)
 </script>

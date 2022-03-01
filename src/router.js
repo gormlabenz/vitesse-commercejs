@@ -1,4 +1,4 @@
-import Cart from './views/Cart.vue'
+import CartDetail from './views/CartDetail.vue'
 import Checkout from './views/Checkout.vue'
 import Confirmation from './views/Confirmation.vue'
 import Home from './views/Home.vue'
@@ -10,7 +10,7 @@ export const routes = [
         component: Home,
     },
     { path: '/product/:permalink', component: ProductDetail, props: true },
-    { path: '/cart', component: Cart },
+    { path: '/cart', component: CartDetail },
     { path: '/checkout', component: Checkout },
     { path: '/confirmation', component: Confirmation },
 ]
