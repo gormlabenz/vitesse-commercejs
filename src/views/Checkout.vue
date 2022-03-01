@@ -96,7 +96,7 @@
                 />
                 <label for="postalZipCode">Postal/Zip code</label>
                 <input
-                    type="number"
+                    type="string"
                     v-model="commerceStore.shipping.postalZipCode"
                     name="postalZipCode"
                     placeholder="Enter your postal/zip code"
@@ -180,12 +180,12 @@
                     </div>
                 </div>
                 <div
-                    v-if="commerceStore.paymentMethodPaypal"
+                    v-show="commerceStore.paymentMethodPaypal"
                     id="paypal-button-container"
                 ></div>
                 <div
                     class="mt-6 flex flex-col"
-                    v-if="commerceStore.paymentMethodCard"
+                    v-show="commerceStore.paymentMethodCard"
                 >
                     <label for="cardNum">Credit card number</label>
                     <input
@@ -257,8 +257,14 @@ const paymentInformation = ref(null)
 
 const validate = (form) => {
     if (form.checkValidity()) {
-        if (stage.value < 2) stage.value++
-        else if (stage.value == 3) commerceStore.captureOrder()
+        if (stage.value == 0) {
+            stage.value++
+        } else if (stage.value == 1) {
+            stage.value++
+            commerceStore.getPaypalPaymentId()
+        } else if (stage.value == 2) {
+            commerceStore.captureOrder()
+        }
     } else {
         const inputs = form.querySelectorAll('input')
         inputs.forEach((input) => {

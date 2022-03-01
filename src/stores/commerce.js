@@ -188,7 +188,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         try {
             const order = await commerce.checkout.capture(
                 checkoutToken.value.id,
-                orderData.value
+                orderDetails.value
             )
             order.value = order
             useRouter().push('/confirmation')
@@ -201,9 +201,19 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         try {
             // Use a checkout token ID that was generated earlier, and any order details that may have been collected
             // on this page.
+            const orderDetailsData = {
+                ...orderDetails.value,
+                payment: {
+                    gateway: 'paypal',
+                    paypal: {
+                        action: 'authorize',
+                    },
+                },
+            }
+            console.log('orderDetailsData', orderDetailsData)
             const paypalAuthData = await commerce.checkout.capture(
                 checkoutToken.value.id,
-                orderData.value
+                orderDetailsData
             )
             console.log('Paypal auth data:', paypalAuthData)
             paypalAuth.value = paypalAuthData
@@ -229,11 +239,13 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                     return paypalAuth.value.payment_id // The payment ID from earlier
                 },
                 onAuthorize: function (data, actions) {
+                    console.log('onAuthorize', data, actions)
                     // Handler if customer DOES authorize payment (this is where you get the payment_id & payer_id you need to pass to Chec)
                     captureOrder(data)
                 },
                 onCancel: function (data, actions) {
                     // Handler if customer does not authorize payment
+                    console.log('onCancel', data, actions)
                 },
             },
             '#paypal-button-container'
@@ -246,7 +258,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
               }, 0)
             : 0
     )
-    const orderData = computed(() =>
+    const orderDetails = computed(() =>
         checkoutToken.value
             ? {
                   line_items: checkoutToken.value.live.line_items,
@@ -288,7 +300,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
                     action: 'authorize',
                 },
             }
-        } else if (paymentMethodCreditCard.value) {
+        } else if (paymentMethodCard.value) {
             return {
                 gateway: 'test_gateway',
                 card: {
@@ -340,6 +352,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         fetchShippingCountries,
         fetchShippingSubdivisions,
         fetchShippingOptions,
+        getPaypalPaymentId,
         validateShippingOption,
         validateCheckoutForm,
         captureOrder,
@@ -359,7 +372,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         countries,
         shippingSubdivisions,
         shippingOptions,
-        orderData,
+        orderDetails,
     }
 })
 
