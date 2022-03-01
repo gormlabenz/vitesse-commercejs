@@ -192,10 +192,14 @@
                         <div class="mt-4">
                             <div>
                                 <h4 class="text-xl font-bold">Paypal</h4>
+                                <p class="text-gray-500">Pay with paypal</p>
                                 <div id="paypal-button-container"></div>
                             </div>
                             <div>
                                 <h4 class="text-xl font-bold">Credit Card</h4>
+                                <p class="text-gray-500">
+                                    Pay with credit card
+                                </p>
                                 <form class="mt-6 flex flex-col">
                                     <label for="cardNum"
                                         >Credit card number</label
@@ -235,10 +239,13 @@
                                     />
                                 </form>
                                 <button
-                                    class="mt-4"
+                                    class="mt-4 whitespace-nowrap"
                                     @click.prevent="validate(summary)"
                                 >
-                                    Buy
+                                    Pay €{{
+                                        parseFloat(commerceStore.totalPrice)
+                                    }}
+                                    with credit card
                                 </button>
                             </div>
                         </div>
