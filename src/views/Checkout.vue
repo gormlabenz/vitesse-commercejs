@@ -1,6 +1,11 @@
 <template>
     <div class="my-8 flex justify-start gap-8">
-        <div class="relative w-96 space-y-8 rounded-md p-4 shadow-md">
+        <div
+            class="relative w-96 space-y-8 rounded-md p-4 shadow-md"
+            :class="{
+                'pointer-events-none opacity-50': commerceStore.totalItems == 0,
+            }"
+        >
             <div class="flex flex-col items-start">
                 <button
                     @click="commerceStore.stage = 0"
@@ -54,6 +59,12 @@
             <h4 class="text-2xl font-bold">
                 Products in Cart: {{ commerceStore.totalItems }}
             </h4>
+            <p
+                v-if="commerceStore.totalItems == 0"
+                class="font-bold text-red-500"
+            >
+                No products in cart
+            </p>
             <div class="mt-3 divide-y-2 divide-slate-400">
                 <div
                     class="flex justify-between space-y-2"
