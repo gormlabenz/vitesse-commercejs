@@ -1,6 +1,8 @@
 <template>
     <div class="my-8">
-        <h4 class="text-2xl font-bold">Products in Cart: {{ totalItems }}</h4>
+        <h4 class="text-2xl font-bold">
+            Products in Cart: {{ commerceStore.totalItems }}
+        </h4>
         <div class="mt-3 divide-y-2 divide-slate-400">
             <div
                 class="flex justify-between space-y-2"
@@ -40,10 +42,6 @@
 import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
-
-const totalItems = computed(() =>
-    commerceStore.ready ? commerceStore.cart.total_items : 0
-)
 
 const lineItems = computed(() =>
     commerceStore.ready ? commerceStore.cart.line_items : []

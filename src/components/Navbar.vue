@@ -17,7 +17,9 @@
                         to="/cart"
                         class="text-gray-500 hover:text-gray-900"
                     >
-                        <b class="text-red-500">{{ totalItems }}</b>
+                        <b class="text-red-500">{{
+                            commerceStore.totalItems
+                        }}</b>
                         Cart</router-link
                     >
                 </div>
@@ -29,9 +31,5 @@
 import { useCommerceStore } from '../stores/commerce'
 
 const commerceStore = useCommerceStore()
-
-const totalItems = computed(() =>
-    commerceStore.ready ? commerceStore.cart.total_items : 0
-)
 </script>
 <style lang=""></style>

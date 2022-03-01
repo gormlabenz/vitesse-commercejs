@@ -258,6 +258,9 @@ export const useCommerceStore = defineStore('commerceStore', () => {
               }, 0)
             : 0
     )
+    const totalItems = computed(() =>
+        ready.value ? cart.value.total_items : 0
+    )
     const orderDetails = computed(() =>
         checkoutToken.value
             ? {
@@ -363,6 +366,7 @@ export const useCommerceStore = defineStore('commerceStore', () => {
         paymentMethodCard,
         paymentMethodPaypal,
         totalPrice,
+        totalItems,
         cart,
         products,
         ready,
